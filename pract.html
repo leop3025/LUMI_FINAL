@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Practice Your Spanish</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* Underwater Elements */
+    body {
+      position: relative;
+      overflow-x: hidden;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+    }
+
+    .chatbot-btn {
+      position: fixed;
+      top: 550px;  /* Positioned below the header */
+      right: 20px;
+      z-index: 1000;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .chatbot-btn:hover {
+      background: #2563eb;
+      transform: scale(1.05);
+    }
+    
+    .chatbot-btn i {
+      font-size: 24px;
+    }
+
+    .bubble {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: float linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .fish {
+      position: absolute;
+      z-index: 0;
+      animation: swim linear infinite;
+      font-size: 2rem;
+    }
+
+    @keyframes swim {
+      0% {
+        transform: translateX(-100px);
+      }
+      100% {
+        transform: translateX(calc(100vw + 100px));
+      }
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+      background-size: cover;
+      z-index: 0;
+    }
+
+    /* Custom Card Styles */
+    .aqua-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 102, 204, 0.1);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .aqua-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 102, 204, 0.2);
+    }
+
+    .aqua-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 102, 204, 0.1) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    .aqua-btn {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .aqua-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
+    }
+
+    .tab-btn {
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+<body>
+  <!-- Underwater Elements -->
+  <div class="wave"></div>
+  
+  <!-- Chatbot Button -->
+  <button class="chatbot-btn" onclick="window.location.href='chatbot.html'">
+    <i class="fas fa-robot"></i>
+  </button>
+
+  <header class="flex justify-between items-center p-4 bg-white shadow-md relative z-10">
+    <div class="flex items-center">
+      <img alt="Lumi logo" class="rounded-full w-10 h-10" src="https://placehold.co/40x40/0066cc/ffffff?text=LL"/>
+      <h1 class="text-blue-600 text-xl font-bold ml-2">
+        Learning with <span class="text-blue-800">Lumi</span>
+      </h1>
+    </div>
+    <nav class="flex space-x-4">
+      <a class="text-blue-800 hover:text-blue-600" href="index.html">Home</a>
+      <a class="text-blue-800 hover:text-blue-600" href="learn.html">Learn</a>
+      <a class="text-white bg-blue-500 px-4 py-2 rounded-full aqua-btn hover:bg-blue-600" href="practice.html">Practice</a>
+      <a class="text-blue-800 hover:text-blue-600" href="user.html">Profile</a>
+    </nav>
+    <div class="flex items-center">
+      <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full shadow">3 day streak</span>
+      <img alt="User profile picture" class="rounded-full w-10 h-10 ml-2" src="https://placehold.co/40x40"/>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto mt-8 p-4 relative z-10">
+    <h2 class="text-3xl font-bold text-center mb-4 text-blue-800">Practice Your Spanish</h2>
+    <p class="text-center text-blue-600 mb-8">
+      Improve your Spanish skills with these interactive activities designed to help you master vocabulary, practice conversations, and test your knowledge.
+    </p>
+
+    <!-- Activity Mode Buttons -->
+    <div class="flex justify-center mb-6">
+      <button id="btnActivities" class="tab-btn bg-blue-500 text-white px-6 py-2 rounded-tl-lg rounded-bl-lg aqua-btn" onclick="showActivities()">Activities</button>
+      <button id="btnVocab" class="tab-btn bg-blue-100 text-blue-600 px-6 py-2 rounded-tr-lg rounded-br-lg aqua-btn" onclick="showVocab()">Vocabulary</button>
+    </div>
+
+    <!-- Practice Activities -->
+    <div id="activityGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="aqua-card p-6 flex items-center cursor-pointer" onclick="startGame('vocabMatch')">
+        <i class="fas fa-book text-3xl text-blue-500 mr-4"></i>
+        <div>
+          <h3 class="text-xl font-bold text-blue-800">Vocabulary Match</h3>
+          <p class="text-blue-600">Match Spanish words with their English translations</p>
+        </div>
+      </div>
+
+      
+      <div class="aqua-card p-6 flex items-center cursor-pointer" onclick="startGame('conversationChallenge')">
+        <i class="fas fa-comments text-3xl text-blue-500 mr-4"></i>
+        <div>
+          <h3 class="text-xl font-bold text-blue-800">Conversation Challenge</h3>
+          <p class="text-blue-600">Practice dialogue with common phrases</p>
+        </div>
+      </div>
+
+      <div class="aqua-card p-6 flex items-center cursor-pointer" onclick="startGame('memoryGame')">
+        <i class="fas fa-gamepad text-3xl text-blue-500 mr-4"></i>
+        <div>
+          <h3 class="text-xl font-bold text-blue-800">Memory Game</h3>
+          <p class="text-blue-600">Test your memory with Spanish vocabulary</p>
+        </div>
+      </div>
+
+      <div class="aqua-card p-6 flex items-center cursor-pointer" onclick="startGame('listeningChallenge')">
+        <i class="fas fa-headphones text-3xl text-blue-500 mr-4"></i>
+        <div>
+          <h3 class="text-xl font-bold text-blue-800">Listening Challenge</h3>
+          <p class="text-blue-600">Understand spoken Spanish and select the correct meaning</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vocabulary Activities -->
+    <div id="vocabGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+      <div class="aqua-card p-6 flex items-center cursor-pointer" onclick="startGame('flashcards')">
+        <i class="fas fa-clone text-3xl text-blue-500 mr-4"></i>
+        <div>
+          <h3 class="text-xl font-bold text-blue-800">Flashcards</h3>
+          <p class="text-blue-600">Review key vocabulary with interactive flashcards</p>
+        </div>
+      </div>
+
+      <div class="aqua-card p-6 flex items-center cursor-pointer" onclick="startGame('fillInTheBlank')">
+        <i class="fas fa-pen-fancy text-3xl text-blue-500 mr-4"></i>
+        <div>
+          <h3 class="text-xl font-bold text-blue-800">Fill in the Blank</h3>
+          <p class="text-blue-600">Complete the sentence using correct Spanish vocabulary</p>
+        </div>
+      </div>
+
+      <div class="aqua-card p-6 flex items-center cursor-pointer" onclick="startGame('wordSearch')">
+        <i class="fas fa-search text-3xl text-blue-500 mr-4"></i>
+        <div>
+          <h3 class="text-xl font-bold text-blue-800">Word Search</h3>
+          <p class="text-blue-600">Find Spanish words in a fun word puzzle</p>
+        </div>
+      </div>
+
+      <div class="aqua-card p-6 flex items-center cursor-pointer" onclick="startGame('spellingBee')">
+        <i class="fas fa-spell-check text-3xl text-blue-500 mr-4"></i>
+        <div>
+          <h3 class="text-xl font-bold text-blue-800">Spelling Bee</h3>
+          <p class="text-blue-600">Listen and type the correct Spanish word</p>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center mt-10">
+      <a href="exam.html" class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg font-semibold aqua-btn hover:bg-blue-700">
+        Take Exam
+      </a>
+    </div>
+    
+  </main>
+
+  <!-- JavaScript Interactions -->
+  <script>
+    // Create bubbles
+    function createBubbles() {
+      const bubbleCount = 20;
+      for (let i = 0; i < bubbleCount; i++) {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        
+        const size = Math.random() * 15 + 5;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        
+        bubble.style.left = `${Math.random() * 100}vw`;
+        bubble.style.bottom = `-${size}px`;
+        
+        const duration = Math.random() * 10 + 5;
+        bubble.style.animationDuration = `${duration}s`;
+        
+        bubble.style.animationDelay = `${Math.random() * 5}s`;
+        
+        document.body.appendChild(bubble);
+      }
+    }
+
+    // Create fish
+    function createFish() {
+      const fishCount = 4;
+      const fishTypes = ['🐠', '🐟', '🐡', '🦈'];
+      
+      for (let i = 0; i < fishCount; i++) {
+        const fish = document.createElement('div');
+        fish.classList.add('fish');
+        fish.textContent = fishTypes[i % fishTypes.length];
+        fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+        
+        fish.style.top = `${Math.random() * 70 + 15}vh`;
+        
+        const duration = Math.random() * 20 + 20;
+        fish.style.animationDuration = `${duration}s`;
+        
+        fish.style.animationDelay = `${Math.random() * 10}s`;
+        
+        document.body.appendChild(fish);
+      }
+    }
+
+    function showActivities() {
+      document.getElementById("btnActivities").classList.add("bg-blue-500", "text-white");
+      document.getElementById("btnActivities").classList.remove("bg-blue-100", "text-blue-600");
+
+      document.getElementById("btnVocab").classList.add("bg-blue-100", "text-blue-600");
+      document.getElementById("btnVocab").classList.remove("bg-blue-500", "text-white");
+
+      document.getElementById("activityGrid").classList.remove("hidden");
+      document.getElementById("vocabGrid").classList.add("hidden");
+    }
+
+    function showVocab() {
+      document.getElementById("btnVocab").classList.add("bg-blue-500", "text-white");
+      document.getElementById("btnVocab").classList.remove("bg-blue-100", "text-blue-600");
+
+      document.getElementById("btnActivities").classList.add("bg-blue-100", "text-blue-600");
+      document.getElementById("btnActivities").classList.remove("bg-blue-500", "text-white");
+
+      document.getElementById("activityGrid").classList.add("hidden");
+      document.getElementById("vocabGrid").classList.remove("hidden");
+    }
+
+    function startGame(activity) {
+  console.log("Starting activity:", activity);
+  switch (activity) {
+    case 'vocabMatch':
+      window.location.href = './vocabulary.html';
+      break;
+    case 'conversationChallenge':
+      window.location.href = './convo.html';
+      break;
+    case 'memoryGame':
+      window.location.href = './match.html';
+      break;
+    case 'listeningChallenge':
+      window.location.href = './listening.html';
+      break;
+    case 'flashcards':
+      window.location.href = './flashcard.html';
+      break;
+    case 'fillInTheBlank':
+      window.location.href = './fillintheblank.html';
+      break;
+    case 'wordSearch':
+      window.location.href = './wordsearch.html';
+      break;
+    case 'spellingBee':
+      window.location.href = './spellingbee.html';
+      break;
+    default:
+      console.warn('Unknown activity:', activity);
+  }     
+}
+
+
+
+    // Initialize animations
+    window.onload = function() {
+      createBubbles();
+      createFish();
+    };
+  </script>
+</body>
+</html>

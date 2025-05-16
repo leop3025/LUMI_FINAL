@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live into Spanish with Lumi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Underwater Elements */
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .fish {
+            position: absolute;
+            z-index: -1;
+            animation: swim linear infinite;
+        }
+
+        @keyframes swim {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+            background-size: cover;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #0066cc;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #2d5985;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            font-weight: 500;
+        }
+
+        /* Button Styles */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 0.9rem 2.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-size: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #0066cc;
+            color: white;
+            border: 2px solid #0066cc;
+        }
+
+        .btn-primary:hover {
+            background-color: #0055aa;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #0066cc;
+            border: 2px solid #0066cc;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e6f2ff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 102, 204, 0.2);
+        }
+
+        /* Features List */
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+            color: #2d5985;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .bullet {
+            color: #0066cc;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        /* Divider */
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #0066cc, transparent);
+            margin: 3rem auto;
+            max-width: 800px;
+            border: none;
+        }
+
+        /* Pathways Section */
+        .pathways {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: #0066cc;
+            margin-bottom: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .pathway-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .pathway-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 300px;
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+            transition: all 0.3s ease;
+            text-align: left;
+            border: 1px solid rgba(0, 102, 204, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pathway-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 102, 204, 0.2);
+        }
+
+        .pathway-card h3 {
+            color: #0066cc;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pathway-card p {
+            color: #2d5985;
+            margin: 0;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pathway-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 102, 204, 0.1) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        /* Lumi Image */
+        .lumi-image {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 150px;
+            height: auto;
+            z-index: 2;
+            animation: floatLumi 3s ease-in-out infinite;
+        }
+
+        @keyframes floatLumi {
+            0%, 100% {
+                transform: translateY(-50%) translateY(0);
+            }
+            50% {
+                transform: translateY(-50%) translateY(-10px);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 250px;
+                text-align: center;
+            }
+            
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pathway-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pathway-card {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .lumi-image {
+                width: 100px;
+                right: 10px;
+            }
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0066cc;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: #2d5985;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            color: #0066cc;
+        }
+
+        /* Responsive Nav */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* You can replace this with a hamburger menu if needed */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Underwater Elements -->
+    <div class="wave"></div>
+    <!-- Lumi Image -->
+    <img src="lumiaddpng.png" alt="Lumi Character" class="lumi-image">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Lumi</div>
+            <ul class="nav-links">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./learn.html">Courses</a></li>
+                <li><a href="./login.html">Login</a></li>
+                <li><a href="./chatbot.html">Chat</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <header class="header">
+            <div class="flex items-center justify-center mb-8">
+                <div class="flex flex-col md:flex-row items-center text-center md:text-left">
+                    <div>
+                        <h1>Live into Spanish with Lumi</h1>
+                        <p class="subtitle">
+                            Learn Spanish in a fun, immersive underwater-themed experience. 
+                            Master vocabulary, grammar, and pronunciation with interactive lessons and games.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <a href="./learn.html" class="btn btn-primary">Start Learning</a>
+                <a href="./pract.html" class="btn btn-secondary">Quick Quiz</a>
+            </div>
+            
+            <div class="features">
+                <div class="feature-item">
+                    <span class="bullet">•</span> Fun, interactive lessons
+                </div>
+                <div class="feature-item">
+                    <span class="bullet">•</span> Track your progress
+                </div>
+                <div class="feature-item">
+                    <span class="bullet">•</span> Personalized learning
+                </div>
+            </div>
+        </header>
+        
+        <div class="divider"></div>
+        
+        <section class="pathways">
+            <h2>Popular Pathways</h2>
+            
+            <div class="pathway-cards">
+                <div class="pathway-card">
+                    <h3>Beginner Basics</h3>
+                    <p>Start with essential greetings and simple conversations</p>
+                </div>
+                
+                <div class="pathway-card">
+                    <h3>Food & Dining</h3>
+                    <p>Learn to order food and navigate restaurants in Spanish</p>
+                </div>
+                
+                <div class="pathway-card">
+                    <h3>Daily Practice</h3>
+                    <p>Strengthen your skills with targeted daily exercises</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Create bubbles
+        function createBubbles() {
+            const bubbleCount = 30;
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Random size between 5px and 20px
+                const size = Math.random() * 15 + 5;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Random position
+                bubble.style.left = `${Math.random() * 100}vw`;
+                bubble.style.bottom = `-${size}px`;
+                
+                // Random animation duration between 5s and 15s
+                const duration = Math.random() * 10 + 5;
+                bubble.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                
+                document.body.appendChild(bubble);
+            }
+        }
+
+        // Create fish
+        function createFish() {
+            const fishCount = 5;
+            const fishTypes = ['🐠', '🐟', '🐡', '🦈', '🐋'];
+            
+            for (let i = 0; i < fishCount; i++) {
+                const fish = document.createElement('div');
+                fish.classList.add('fish');
+                fish.textContent = fishTypes[i % fishTypes.length];
+                fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+                
+                // Random vertical position
+                fish.style.top = `${Math.random() * 80 + 10}vh`;
+                
+                // Random animation duration between 20s and 40s
+                const duration = Math.random() * 20 + 20;
+                fish.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                fish.style.animationDelay = `${Math.random() * 10}s`;
+                
+                document.body.appendChild(fish);
+            }
+        }
+
+        // Initialize animations
+        window.onload = function() {
+            createBubbles();
+            createFish();
+        };
+    </script>
+</body>
+</html>

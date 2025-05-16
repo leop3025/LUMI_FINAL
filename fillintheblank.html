@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fill in the Blank | AquaLearn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #e0f2fe, #bae6fd);
+      overflow-x: hidden;
+    }
+
+    /* Bubbles */
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: rise 8s infinite ease-in;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-800px) scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    /* Fish animation */
+    .fish {
+      position: absolute;
+      bottom: 100px;
+      width: 80px;
+      animation: swim 12s linear infinite;
+    }
+
+    .fish img {
+      width: 100%;
+    }
+
+    @keyframes swim {
+      0% {
+        transform: translateX(-100px);
+      }
+      100% {
+        transform: translateX(110vw);
+      }
+    }
+  </style>
+</head>
+<body class="relative overflow-hidden min-h-screen p-6">
+
+  <!-- Floating Fish -->
+  <div class="fish" style="left: -100px; animation-delay: 2s;">
+    <img src="https://img.icons8.com/emoji/96/fish-emoji.png" alt="Fish">
+  </div>
+  <div class="fish" style="left: -150px; animation-delay: 6s;">
+    <img src="https://img.icons8.com/emoji/96/tropical-fish.png" alt="Fish">
+  </div>
+
+  <!-- Bubbles -->
+  <script>
+    for (let i = 0; i < 20; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.style.left = Math.random() * 100 + 'vw';
+      bubble.style.width = bubble.style.height = 10 + Math.random() * 20 + 'px';
+      bubble.style.animationDuration = 6 + Math.random() * 4 + 's';
+      bubble.style.animationDelay = Math.random() * 5 + 's';
+      document.body.appendChild(bubble);
+    }
+  </script>
+
+  <!-- Content -->
+  <div class="relative z-10 max-w-3xl mx-auto">
+    <header class="mb-10 text-center">
+      <h1 class="text-4xl font-bold text-blue-800 mb-2">✏️ Fill in the Blank</h1>
+      <p class="text-blue-700">Type the correct Spanish word to complete the sentence.</p>
+    </header>
+
+    <form id="quiz" class="space-y-6">
+      <!-- Question 1 -->
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <label class="block text-blue-900 font-semibold mb-2">
+          1. Yo ___ en casa. (I am at home.)
+        </label>
+        <input type="text" name="q1" class="w-full p-2 border rounded-md" />
+      </div>
+
+      <!-- Question 2 -->
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <label class="block text-blue-900 font-semibold mb-2">
+          2. Nosotros ___ pizza. (We eat pizza.)
+        </label>
+        <input type="text" name="q2" class="w-full p-2 border rounded-md" />
+      </div>
+
+      <!-- Question 3 -->
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <label class="block text-blue-900 font-semibold mb-2">
+          3. Ella ___ al parque. (She goes to the park.)
+        </label>
+        <input type="text" name="q3" class="w-full p-2 border rounded-md" />
+      </div>
+
+      <button type="button" onclick="checkAnswers()" class="mt-4 bg-blue-700 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
+        Check Answers
+      </button>
+    </form>
+
+    <div id="result" class="mt-6 text-lg text-center font-semibold text-blue-800"></div>
+  </div>
+
+  <script>
+   
+  function checkAnswers() {
+    const answers = {
+      q1: "estoy",
+      q2: "comemos",
+      q3: "va"
+    };
+
+    let score = 0;
+    const form = document.getElementById('quiz');
+    const result = document.getElementById('result');
+
+    for (let key in answers) {
+      const inputField = form.elements[key];
+      const userAnswer = inputField.value.trim().toLowerCase();
+      const correctAnswer = answers[key];
+
+      // Remove previous feedback if any
+      const existingFeedback = inputField.parentElement.querySelector('.feedback');
+      if (existingFeedback) existingFeedback.remove();
+
+      const feedback = document.createElement('div');
+      feedback.className = 'feedback mt-2 text-sm';
+
+      if (userAnswer === correctAnswer) {
+        score++;
+        feedback.innerHTML = `<span class="text-green-600 font-medium">✅ Correct!</span>`;
+      } else {
+        feedback.innerHTML = `<span class="text-red-600 font-medium">❌ Incorrect.</span> Correct answer: <span class="text-blue-800 font-semibold">${correctAnswer}</span>`;
+      }
+
+      inputField.parentElement.appendChild(feedback);
+    }
+
+    result.textContent = `You got ${score} out of 3 correct!`;
+  }
+
+
+  </script>
+</body>
+</html>

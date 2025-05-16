@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel & Directions | Learning with Lumi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Ocean Theme Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Underwater Elements */
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .fish {
+            position: absolute;
+            z-index: -1;
+            animation: swim linear infinite;
+        }
+
+        @keyframes swim {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+            background-size: cover;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: #2d5985;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-links li a:hover {
+            color: #0066cc;
+            background-color: rgba(0, 102, 204, 0.1);
+        }
+
+        .nav-links li a.active {
+            color: white;
+            background-color: #0066cc;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            padding-bottom: 120px; /* Space for wave */
+        }
+
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .lesson-title {
+            font-size: 2.5rem;
+            color: #0066cc;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .lesson-subtitle {
+            font-size: 1.2rem;
+            color: #2d5985;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            font-weight: 500;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .lesson-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 102, 204, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 102, 204, 0.2);
+        }
+
+        .lesson-section h2 {
+            color: #0066cc;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            position: relative;
+        }
+
+        .lesson-section h2::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #0066cc;
+            border-radius: 3px;
+        }
+
+        /* Direction Cards */
+        .direction-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 102, 204, 0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #0066cc;
+        }
+
+        .direction-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 102, 204, 0.15);
+        }
+
+        .direction-card h3 {
+            color: #0066cc;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .direction-card p {
+            color: #2d5985;
+            margin: 0.5rem 0;
+        }
+
+        .direction-card .translation {
+            font-style: italic;
+            color: #666;
+        }
+
+        /* Transportation Types */
+        .transport-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .transport-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 102, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .transport-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 102, 204, 0.2);
+        }
+
+        .transport-icon {
+            font-size: 1.8rem;
+            color: #0066cc;
+            margin-bottom: 0.5rem;
+        }
+
+        .transport-name {
+            font-size: 0.9rem;
+            color: #2d5985;
+        }
+
+        /* Practice Section */
+        .practice-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+        }
+
+        .practice-question {
+            margin-bottom: 2rem;
+        }
+
+        .practice-question h3 {
+            color: #0066cc;
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .option {
+            background-color: white;
+            border: 2px solid #0066cc;
+            border-radius: 30px;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #0066cc;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background-color: #e6f2ff;
+        }
+
+        .option.selected {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        .option.correct {
+            background-color: #4caf50;
+            border-color: #4caf50;
+            color: white;
+        }
+
+        .option.incorrect {
+            background-color: #f44336;
+            border-color: #f44336;
+            color: white;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #2e7d32;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #c62828;
+            display: block;
+        }
+
+        .next-btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 0.9rem 2.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            display: inline-block;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .next-btn:hover {
+            background-color: #0055aa;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 102, 204, 0.2);
+        }
+
+        .next-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Audio Button */
+        .audio-btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .audio-btn:hover {
+            background-color: #0055aa;
+            transform: scale(1.1);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            margin: 2rem 0;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #0066cc;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Map Example */
+        .map-example {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 8px rgba(0, 102, 204, 0.1);
+            text-align: center;
+        }
+
+        .map-placeholder {
+            background-color: #e0f7fa;
+            height: 200px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0066cc;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .lesson-title {
+                font-size: 2rem;
+            }
+            
+            .lesson-section {
+                min-width: 100%;
+            }
+            
+            .transport-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="https://placehold.co/40x40/0066cc/ffffff?text=LL" alt="Lumi Logo">
+                Learning with Lumi
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#" class="active">Learn</a></li>
+                <li><a href="pract.html">Practice</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Underwater Elements -->
+    <div class="wave"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header class="lesson-header">
+            <h1 class="lesson-title">Travel & Directions</h1>
+            <p class="lesson-subtitle">Learn to navigate cities, ask for directions, and use transportation</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </header>
+
+        <div class="lesson-content">
+            <section class="lesson-section">
+                <h2>Asking for Directions</h2>
+                
+                <div class="direction-card">
+                    <h3>Basic Questions <button class="audio-btn" onclick="playAudio('basic-questions')"><i class="fas fa-volume-up"></i></button></h3>
+                    <p><strong>¿Dónde está...?</strong> - Where is...?</p>
+                    <p><strong>¿Cómo llego a...?</strong> - How do I get to...?</p>
+                    <p><strong>¿Está lejos?</strong> - Is it far?</p>
+                    <p><strong>¿Puede mostrarme en el mapa?</strong> - Can you show me on the map?</p>
+                </div>
+                
+                <div class="direction-card">
+                    <h3>Understanding Responses <button class="audio-btn" onclick="playAudio('understanding-responses')"><i class="fas fa-volume-up"></i></button></h3>
+                    <p><strong>Derecho</strong> - Straight ahead</p>
+                    <p><strong>Gire a la izquierda/derecha</strong> - Turn left/right</p>
+                    <p><strong>En la esquina</strong> - On the corner</p>
+                    <p><strong>A dos cuadras</strong> - Two blocks away</p>
+                </div>
+                
+                <div class="map-example">
+                    <div class="map-placeholder">
+                        [Simple Map Illustration]
+                    </div>
+                    <p><strong>Example:</strong> "El museo está a la derecha del parque, frente al banco."</p>
+                    <p class="translation">"The museum is to the right of the park, across from the bank."</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Transportation</h2>
+                
+                <div class="transport-grid">
+                    <div class="transport-item">
+                        <div class="transport-icon">🚇</div>
+                        <div class="transport-name">Metro</div>
+                        <button class="audio-btn small-btn" onclick="playAudio('metro')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="transport-item">
+                        <div class="transport-icon">🚌</div>
+                        <div class="transport-name">Autobús</div>
+                        <button class="audio-btn small-btn" onclick="playAudio('autobus')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="transport-item">
+                        <div class="transport-icon">🚕</div>
+                        <div class="transport-name">Taxi</div>
+                        <button class="audio-btn small-btn" onclick="playAudio('taxi')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="transport-item">
+                        <div class="transport-icon">🚆</div>
+                        <div class="transport-name">Tren</div>
+                        <button class="audio-btn small-btn" onclick="playAudio('tren')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="transport-item">
+                        <div class="transport-icon">✈️</div>
+                        <div class="transport-name">Aeropuerto</div>
+                        <button class="audio-btn small-btn" onclick="playAudio('aeropuerto')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="transport-item">
+                        <div class="transport-icon">⛴️</div>
+                        <div class="transport-name">Barco</div>
+                        <button class="audio-btn small-btn" onclick="playAudio('barco')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                </div>
+                
+                <div class="direction-card">
+                    <h3>Transportation Phrases <button class="audio-btn" onclick="playAudio('transport-phrases')"><i class="fas fa-volume-up"></i></button></h3>
+                    <p><strong>¿Dónde está la parada de autobús?</strong> - Where is the bus stop?</p>
+                    <p><strong>Necesito un boleto para...</strong> - I need a ticket to...</p>
+                    <p><strong>¿Cuánto cuesta el pasaje?</strong> - How much is the fare?</p>
+                    <p><strong>¿Este autobús va al centro?</strong> - Does this bus go downtown?</p>
+                </div>
+                
+                <div class="direction-card">
+                    <h3>At the Airport <button class="audio-btn" onclick="playAudio('airport-phrases')"><i class="fas fa-volume-up"></i></button></h3>
+                    <p><strong>¿Dónde está la salida de emergencia?</strong> - Where is the emergency exit?</p>
+                    <p><strong>¿Dónde reclamo mi equipaje?</strong> - Where do I claim my luggage?</p>
+                    <p><strong>¿A qué hora sale el vuelo?</strong> - What time does the flight depart?</p>
+                </div>
+            </section>
+        </div>
+
+        <section class="practice-section">
+            <h2>Practice What You've Learned</h2>
+            
+            <div class="practice-question" id="question1">
+                <h3>1. How would you ask "Where is the train station?" in Spanish?</h3>
+                <div class="options">
+                    <div class="option" onclick="checkAnswer(this, 'correct', 'question1')">¿Dónde está la estación de tren?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question1')">¿Qué hora es el tren?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question1')">¿Cómo funciona el tren?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question1')">¿Cuánto cuesta el tren?</div>
+                </div>
+                <div class="feedback correct">Correct! "¿Dónde está la estación de tren?" is how you ask for the train station location.</div>
+                <div class="feedback incorrect">Not quite. The correct phrase is "¿Dónde está la estación de tren?" which means "Where is the train station?"</div>
+            </div>
+            
+            <div class="practice-question" id="question2">
+                <h3>2. What does "Gire a la derecha" mean?</h3>
+                <div class="options">
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question2')">Go straight ahead</div>
+                    <div class="option" onclick="checkAnswer(this, 'correct', 'question2')">Turn right</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question2')">Turn left</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question2')">Stop here</div>
+                </div>
+                <div class="feedback correct">Excellent! "Gire a la derecha" means "Turn right".</div>
+                <div class="feedback incorrect">Actually, "Gire a la derecha" means "Turn right" in Spanish.</div>
+            </div>
+            
+            <div class="practice-question" id="question3">
+                <h3>3. How would you ask "Does this bus go to the city center?"</h3>
+                <div class="options">
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question3')">¿Dónde está el centro?</div>
+                    <div class="option" onclick="checkAnswer(this, 'correct', 'question3')">¿Este autobús va al centro?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question3')">¿Cuánto cuesta el autobús?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question3')">¿A qué hora sale el autobús?</div>
+                </div>
+                <div class="feedback correct">That's right! "¿Este autobús va al centro?" is how you ask if the bus goes downtown.</div>
+                <div class="feedback incorrect">Not exactly. The correct phrase is "¿Este autobús va al centro?" when asking about bus direction.</div>
+            </div>
+            
+            <button class="next-btn" id="nextBtn" onclick="completeLesson()" disabled>Complete Lesson</button>
+        </section>
+    </div>
+
+    <script>
+        // Underwater animations
+        window.onload = function() {
+            createBubbles();
+            createFish();
+            updateProgressBar(0);
+        };
+
+        function createBubbles() {
+            const bubbleCount = 20;
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                const size = Math.random() * 15 + 5;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                bubble.style.left = `${Math.random() * 100}vw`;
+                bubble.style.bottom = `-${size}px`;
+                
+                const duration = Math.random() * 10 + 5;
+                bubble.style.animationDuration = `${duration}s`;
+                
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                
+                document.body.appendChild(bubble);
+            }
+        }
+
+        function createFish() {
+            const fishCount = 4;
+            const fishTypes = ['🐠', '🐟', '🐡', '🦈'];
+            
+            for (let i = 0; i < fishCount; i++) {
+                const fish = document.createElement('div');
+                fish.classList.add('fish');
+                fish.textContent = fishTypes[i % fishTypes.length];
+                fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+                
+                fish.style.top = `${Math.random() * 70 + 15}vh`;
+                
+                const duration = Math.random() * 20 + 20;
+                fish.style.animationDuration = `${duration}s`;
+                
+                fish.style.animationDelay = `${Math.random() * 10}s`;
+                
+                document.body.appendChild(fish);
+            }
+        }
+
+        // Audio functionality
+        function playAudio(word) {
+            const audioFiles = {
+                'basic-questions': 'https://audio.spanishdict.com/audio?lang=es&text=%C2%BFD%C3%B3nde%20est%C3%A1%20el%20ba%C3%B1o%3F%20%C2%BFC%C3%B3mo%20llego%20al%20museo%3F',
+                'understanding-responses': 'https://audio.spanishdict.com/audio?lang=es&text=Derecho%2C%20gire%20a%20la%20izquierda%2C%20en%20la%20esquina',
+                'metro': 'https://audio.spanishdict.com/audio?lang=es&text=metro',
+                'autobus': 'https://audio.spanishdict.com/audio?lang=es&text=autob%C3%BAs',
+                'taxi': 'https://audio.spanishdict.com/audio?lang=es&text=taxi',
+                'tren': 'https://audio.spanishdict.com/audio?lang=es&text=tren',
+                'aeropuerto': 'https://audio.spanishdict.com/audio?lang=es&text=aeropuerto',
+                'barco': 'https://audio.spanishdict.com/audio?lang=es&text=barco',
+                'transport-phrases': 'https://audio.spanishdict.com/audio?lang=es&text=%C2%BFCu%C3%A1nto%20cuesta%20el%20pasaje%3F%20%C2%BFEste%20autob%C3%BAs%20va%20al%20centro%3F',
+                'airport-phrases': 'https://audio.spanishdict.com/audio?lang=es&text=%C2%BFA%20qu%C3%A9%20hora%20sale%20el%20vuelo%3F%20%C2%BFC%C3%B3mo%20llego%20a%20la%20puerta%20de%20embarque%3F'
+            };
+
+            const audio = new Audio(audioFiles[word]);
+            audio.play();
+        }
+
+        // Practice questions functionality
+        let correctAnswers = 0;
+        const totalQuestions = 3;
+
+        function checkAnswer(selectedOption, result, questionId) {
+            const questionDiv = document.getElementById(questionId);
+            const options = questionDiv.querySelectorAll('.option');
+            const correctFeedback = questionDiv.querySelector('.feedback.correct');
+            const incorrectFeedback = questionDiv.querySelector('.feedback.incorrect');
+            
+            // Disable all options after selection
+            options.forEach(option => {
+                option.onclick = null;
+                if (option === selectedOption) {
+                    option.classList.add('selected');
+                }
+            });
+            
+            if (result === 'correct') {
+                selectedOption.classList.add('correct');
+                correctFeedback.style.display = 'block';
+                correctAnswers++;
+            } else {
+                selectedOption.classList.add('incorrect');
+                incorrectFeedback.style.display = 'block';
+                
+                // Highlight the correct answer
+                options.forEach(option => {
+                    if (option.textContent === correctFeedback.textContent.match(/"(.*?)"/)[1]) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+            
+            updateProgressBar((correctAnswers / totalQuestions) * 100);
+            
+            // Enable complete button if all questions answered
+            if (document.querySelectorAll('.option.selected').length === totalQuestions) {
+                document.getElementById('nextBtn').disabled = false;
+            }
+        }
+
+        function updateProgressBar(percentage) {
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        }
+
+        function completeLesson() {
+            alert(`Congratulations! You've completed the Travel & Directions lesson with ${correctAnswers} out of ${totalQuestions} correct answers.`);
+            // Here you would typically save progress to user's account
+        }
+    </script>
+</body>
+</html>

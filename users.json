@@ -1,0 +1,25 @@
+{
+  "teachers": [
+    {
+      "id": "t1",
+      "username": "teacher1",
+      "password": "teacher123",
+      "email": "teacher1@example.com",
+      "name": "John Smith"
+    }
+  ],
+  "students": [
+    {
+      "id": "s1",
+      "username": "student1",
+      "password": "student123",
+      "email": "student1@example.com",
+      "name": "Alice Johnson",
+      "level": "beginner",
+      "progress": {
+        "greetings": 0,
+        "listening": 0
+      }
+    }
+  ]
+} 

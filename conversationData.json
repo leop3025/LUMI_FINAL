@@ -1,0 +1,665 @@
+[
+  {
+    "prompt": "¿Cómo estás?",
+    "options": [
+      {
+        "text": "Estoy bien, gracias.",
+        "correct": true
+      },
+      {
+        "text": "Tengo hambre.",
+        "correct": false
+      },
+      {
+        "text": "Me llamo Juan.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cómo te llamas?",
+    "options": [
+      {
+        "text": "Tengo 10 años.",
+        "correct": false
+      },
+      {
+        "text": "Me llamo Ana.",
+        "correct": true
+      },
+      {
+        "text": "Estoy cansado.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿De dónde eres?",
+    "options": [
+      {
+        "text": "Soy de México.",
+        "correct": true
+      },
+      {
+        "text": "Estoy en la escuela.",
+        "correct": false
+      },
+      {
+        "text": "Tengo una hermana.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué hora es?",
+    "options": [
+      {
+        "text": "Son las tres.",
+        "correct": true
+      },
+      {
+        "text": "Tengo tres hermanos.",
+        "correct": false
+      },
+      {
+        "text": "Me gusta el tres.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Dónde vives?",
+    "options": [
+      {
+        "text": "Vivo en Madrid.",
+        "correct": true
+      },
+      {
+        "text": "Voy al parque.",
+        "correct": false
+      },
+      {
+        "text": "Quiero helado.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué te gusta hacer?",
+    "options": [
+      {
+        "text": "Me gusta leer.",
+        "correct": true
+      },
+      {
+        "text": "Tengo sueño.",
+        "correct": false
+      },
+      {
+        "text": "Soy alto.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cuál es tu comida favorita?",
+    "options": [
+      {
+        "text": "La pizza.",
+        "correct": true
+      },
+      {
+        "text": "El fútbol.",
+        "correct": false
+      },
+      {
+        "text": "La escuela.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Hablas inglés?",
+    "options": [
+      {
+        "text": "Sí, hablo inglés.",
+        "correct": true
+      },
+      {
+        "text": "No tengo inglés.",
+        "correct": false
+      },
+      {
+        "text": "Estoy inglés.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Tienes hermanos?",
+    "options": [
+      {
+        "text": "Sí, tengo dos hermanos.",
+        "correct": true
+      },
+      {
+        "text": "Sí, tengo dos casas.",
+        "correct": false
+      },
+      {
+        "text": "Sí, tengo dos zapatos.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué estudias?",
+    "options": [
+      {
+        "text": "Estudio biología.",
+        "correct": true
+      },
+      {
+        "text": "Corro biología.",
+        "correct": false
+      },
+      {
+        "text": "Como biología.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Dónde está el baño?",
+    "options": [
+      {
+        "text": "Está al fondo a la derecha.",
+        "correct": true
+      },
+      {
+        "text": "Es lunes.",
+        "correct": false
+      },
+      {
+        "text": "Voy mañana.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cómo se dice 'apple' en español?",
+    "options": [
+      {
+        "text": "Manzana.",
+        "correct": true
+      },
+      {
+        "text": "Mesa.",
+        "correct": false
+      },
+      {
+        "text": "Montaña.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué día es hoy?",
+    "options": [
+      {
+        "text": "Hoy es lunes.",
+        "correct": true
+      },
+      {
+        "text": "Tengo lunes.",
+        "correct": false
+      },
+      {
+        "text": "Voy lunes.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cuál es tu color favorito?",
+    "options": [
+      {
+        "text": "Azul.",
+        "correct": true
+      },
+      {
+        "text": "Dos.",
+        "correct": false
+      },
+      {
+        "text": "Mañana.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué haces los fines de semana?",
+    "options": [
+      {
+        "text": "Voy al cine.",
+        "correct": true
+      },
+      {
+        "text": "Soy cine.",
+        "correct": false
+      },
+      {
+        "text": "Cine es azul.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Tienes mascotas?",
+    "options": [
+      {
+        "text": "Sí, un perro.",
+        "correct": true
+      },
+      {
+        "text": "Sí, un libro.",
+        "correct": false
+      },
+      {
+        "text": "Sí, un carro.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué música te gusta?",
+    "options": [
+      {
+        "text": "Me gusta el pop.",
+        "correct": true
+      },
+      {
+        "text": "Me gusta el rojo.",
+        "correct": false
+      },
+      {
+        "text": "Me gusta el número.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué deporte te gusta?",
+    "options": [
+      {
+        "text": "Me gusta el fútbol.",
+        "correct": true
+      },
+      {
+        "text": "Me gusta la fruta.",
+        "correct": false
+      },
+      {
+        "text": "Me gusta la silla.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué hora es?",
+    "options": [
+      {
+        "text": "Son las cinco.",
+        "correct": true
+      },
+      {
+        "text": "Cinco libros.",
+        "correct": false
+      },
+      {
+        "text": "Voy cinco.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Dónde trabajas?",
+    "options": [
+      {
+        "text": "Trabajo en una oficina.",
+        "correct": true
+      },
+      {
+        "text": "Oficina es roja.",
+        "correct": false
+      },
+      {
+        "text": "Trabajo perro.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cuál es tu película favorita?",
+    "options": [
+      {
+        "text": "Inception.",
+        "correct": true
+      },
+      {
+        "text": "Pizza.",
+        "correct": false
+      },
+      {
+        "text": "Azul.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué haces por la mañana?",
+    "options": [
+      {
+        "text": "Desayuno.",
+        "correct": true
+      },
+      {
+        "text": "Escuela es.",
+        "correct": false
+      },
+      {
+        "text": "Manzana.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cuál es tu animal favorito?",
+    "options": [
+      {
+        "text": "El gato.",
+        "correct": true
+      },
+      {
+        "text": "El verde.",
+        "correct": false
+      },
+      {
+        "text": "El tres.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Dónde estudias?",
+    "options": [
+      {
+        "text": "Estudio en la universidad.",
+        "correct": true
+      },
+      {
+        "text": "La universidad estudia.",
+        "correct": false
+      },
+      {
+        "text": "Casa es.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cuál es tu número favorito?",
+    "options": [
+      {
+        "text": "Siete.",
+        "correct": true
+      },
+      {
+        "text": "Calle.",
+        "correct": false
+      },
+      {
+        "text": "Montaña.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿A qué hora cenas?",
+    "options": [
+      {
+        "text": "A las ocho.",
+        "correct": true
+      },
+      {
+        "text": "Tengo ocho.",
+        "correct": false
+      },
+      {
+        "text": "Voy ocho.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué haces por la noche?",
+    "options": [
+      {
+        "text": "Veo la tele.",
+        "correct": true
+      },
+      {
+        "text": "Tele me ve.",
+        "correct": false
+      },
+      {
+        "text": "Comida.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cómo vas a la escuela?",
+    "options": [
+      {
+        "text": "Voy en autobús.",
+        "correct": true
+      },
+      {
+        "text": "Escuela va.",
+        "correct": false
+      },
+      {
+        "text": "Azul bus.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué idioma hablas?",
+    "options": [
+      {
+        "text": "Hablo español.",
+        "correct": true
+      },
+      {
+        "text": "Hablo coche.",
+        "correct": false
+      },
+      {
+        "text": "Hablo casa.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué ropa llevas hoy?",
+    "options": [
+      {
+        "text": "Una camiseta.",
+        "correct": true
+      },
+      {
+        "text": "Un pan.",
+        "correct": false
+      },
+      {
+        "text": "Una tarea.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué tiempo hace?",
+    "options": [
+      {
+        "text": "Hace sol.",
+        "correct": true
+      },
+      {
+        "text": "Sol es lunes.",
+        "correct": false
+      },
+      {
+        "text": "Tengo sol.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué haces en tu tiempo libre?",
+    "options": [
+      {
+        "text": "Leo libros.",
+        "correct": true
+      },
+      {
+        "text": "Tiempo libro.",
+        "correct": false
+      },
+      {
+        "text": "Luz libros.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cuál es tu estación favorita?",
+    "options": [
+      {
+        "text": "Primavera.",
+        "correct": true
+      },
+      {
+        "text": "Libro.",
+        "correct": false
+      },
+      {
+        "text": "Lunes.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué te gusta comer?",
+    "options": [
+      {
+        "text": "Me gusta el arroz.",
+        "correct": true
+      },
+      {
+        "text": "Gusta arroz.",
+        "correct": false
+      },
+      {
+        "text": "El arroz gusta.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿A qué hora te levantas?",
+    "options": [
+      {
+        "text": "A las siete.",
+        "correct": true
+      },
+      {
+        "text": "Siete cama.",
+        "correct": false
+      },
+      {
+        "text": "Casa levanto.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué color no te gusta?",
+    "options": [
+      {
+        "text": "El marrón.",
+        "correct": true
+      },
+      {
+        "text": "El lunes.",
+        "correct": false
+      },
+      {
+        "text": "El cantar.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Qué haces después de clases?",
+    "options": [
+      {
+        "text": "Estudio o juego.",
+        "correct": true
+      },
+      {
+        "text": "Clases tengo.",
+        "correct": false
+      },
+      {
+        "text": "Azul como.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Cuál es tu fruta favorita?",
+    "options": [
+      {
+        "text": "La fresa.",
+        "correct": true
+      },
+      {
+        "text": "La silla.",
+        "correct": false
+      },
+      {
+        "text": "La calle.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "prompt": "¿Te gusta viajar?",
+    "options": [
+      {
+        "text": "Sí, mucho.",
+        "correct": true
+      },
+      {
+        "text": "Sí, viajarme.",
+        "correct": false
+      },
+      {
+        "text": "Viajo sí.",
+        "correct": false
+      }
+    ]
+  }
+]

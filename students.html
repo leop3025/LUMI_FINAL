@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumi Student Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="auth.js"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+      background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+      min-height: 100vh;
+    }
+
+    .bubble {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: float linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.5; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .fish {
+      position: absolute;
+      z-index: 0;
+      animation: swim linear infinite;
+      font-size: 2rem;
+    }
+
+    @keyframes swim {
+      0% { transform: translateX(-100px); }
+      100% { transform: translateX(calc(100vw + 100px)); }
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+      background-size: cover;
+      z-index: 0;
+    }
+
+    .aqua-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 102, 204, 0.1);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .aqua-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 102, 204, 0.2);
+    }
+
+    .aqua-btn {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .aqua-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
+    }
+
+    .input-field {
+      transition: all 0.3s ease;
+      border: 2px solid #cce0ff;
+    }
+
+    .input-field:focus {
+      border-color: #0066cc;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: background-color 0.3s;
+    }
+
+    .logout-btn:hover {
+      background-color: #ff5252;
+    }
+  </style>
+</head>
+<body>
+  <button class="logout-btn" onclick="logout()">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </button>
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex justify-between h-16">
+        <div class="flex">
+          <div class="flex-shrink-0 flex items-center">
+            <span class="text-2xl font-bold text-blue-600">Lumi</span>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <a href="teacher.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+              Dashboard
+            </a>
+            <a href="#" class="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+              Students
+            </a>
+            <a href="lessons.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+              Lessons
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="wave"></div>
+  
+  <div class="max-w-4xl mx-auto p-4 relative z-10 min-h-screen">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <div class="flex items-center">
+        <img alt="Lumi mascot" class="w-16 h-16 mr-4" src="mascot.png"/>
+        <h1 class="text-3xl font-bold text-blue-600">Student Management</h1>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">Teacher</span>
+        <div class="flex items-center">
+          <span class="text-blue-600 mr-2" id="teacherName">Welcome, Teacher</span>
+          <img alt="Teacher avatar" class="rounded-full w-10 h-10" src="https://placehold.co/40x40"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add New Student Form -->
+    <div class="aqua-card p-6 mb-6">
+      <h2 class="text-blue-600 text-lg font-bold mb-4">Add New Student</h2>
+      <form id="studentForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-blue-600 mb-1">First Name</label>
+            <input type="text" id="firstName" class="input-field w-full p-3 rounded-lg" required>
+          </div>
+          <div>
+            <label class="block text-blue-600 mb-1">Last Name</label>
+            <input type="text" id="lastName" class="input-field w-full p-3 rounded-lg" required>
+          </div>
+        </div>
+        <div>
+          <label class="block text-blue-600 mb-1">Email</label>
+          <input type="email" id="email" class="input-field w-full p-3 rounded-lg" required>
+        </div>
+        <div>
+          <label class="block text-blue-600 mb-1">Level</label>
+          <select id="level" class="input-field w-full p-3 rounded-lg" required>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+        <button type="submit" class="aqua-btn bg-blue-500 text-white px-4 py-2 rounded-lg">
+          <i class="fas fa-user-plus mr-1"></i> Add Student
+        </button>
+      </form>
+    </div>
+
+    <!-- Student List -->
+    <div class="aqua-card p-6">
+      <h2 class="text-blue-600 text-lg font-bold mb-4">Student List</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="text-blue-600">
+              <th class="pb-2">Name</th>
+              <th class="pb-2">Email</th>
+              <th class="pb-2">Level</th>
+              <th class="pb-2">Progress</th>
+              <th class="pb-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentTable">
+            <!-- Populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check authentication on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!isTeacher()) {
+        window.location.href = 'login.html';
+      } else {
+        // Get current user data
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        if (currentUser && currentUser.name) {
+          document.getElementById('teacherName').textContent = `Welcome, ${currentUser.name}`;
+        }
+      }
+    });
+
+    // Create bubbles
+    function createBubbles() {
+      const bubbleCount = 20;
+      for (let i = 0; i < bubbleCount; i++) {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        const size = Math.random() * 15 + 5;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.left = `${Math.random() * 100}vw`;
+        bubble.style.bottom = `-${size}px`;
+        const duration = Math.random() * 10 + 5;
+        bubble.style.animationDuration = `${duration}s`;
+        bubble.style.animationDelay = `${Math.random() * 5}s`;
+        document.body.appendChild(bubble);
+      }
+    }
+
+    // Create fish
+    function createFish() {
+      const fishCount = 4;
+      const fishTypes = ['🐠', '🐟', '🐡', '🦈'];
+      for (let i = 0; i < fishCount; i++) {
+        const fish = document.createElement('div');
+        fish.classList.add('fish');
+        fish.textContent = fishTypes[i % fishTypes.length];
+        fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+        fish.style.top = `${Math.random() * 70 + 15}vh`;
+        const duration = Math.random() * 20 + 20;
+        fish.style.animationDuration = `${duration}s`;
+        fish.style.animationDelay = `${Math.random() * 10}s`;
+        document.body.appendChild(fish);
+      }
+    }
+
+    // Load students from localStorage
+    function loadStudents() {
+      return JSON.parse(localStorage.getItem('students') || '[]');
+    }
+
+    // Save students to localStorage
+    function saveStudents(students) {
+      localStorage.setItem('students', JSON.stringify(students));
+    }
+
+    // Populate student table
+    function populateStudentTable() {
+      const students = loadStudents();
+      const tableBody = document.getElementById('studentTable');
+      tableBody.innerHTML = '';
+      
+      students.forEach((student, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="py-2">${student.firstName} ${student.lastName}</td>
+          <td class="py-2">${student.email}</td>
+          <td class="py-2">${student.level}</td>
+          <td class="py-2">
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${student.progress || 0}%"></div>
+            </div>
+          </td>
+          <td class="py-2">
+            <button onclick="editStudent(${index})" class="text-blue-600 hover:text-blue-800 mr-2">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="deleteStudent(${index})" class="text-red-600 hover:text-red-800">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Handle student form submission
+    document.getElementById('studentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const students = loadStudents();
+      
+      const newStudent = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        level: document.getElementById('level').value,
+        progress: 0
+      };
+      
+      students.push(newStudent);
+      saveStudents(students);
+      populateStudentTable();
+      
+      this.reset();
+      alert('Student added successfully!');
+    });
+
+    // Edit student
+    function editStudent(index) {
+      const students = loadStudents();
+      const student = students[index];
+      
+      document.getElementById('firstName').value = student.firstName;
+      document.getElementById('lastName').value = student.lastName;
+      document.getElementById('email').value = student.email;
+      document.getElementById('level').value = student.level;
+      
+      // Remove the student from the list
+      students.splice(index, 1);
+      saveStudents(students);
+      populateStudentTable();
+    }
+
+    // Delete student
+    function deleteStudent(index) {
+      if (confirm('Are you sure you want to delete this student?')) {
+        const students = loadStudents();
+        students.splice(index, 1);
+        saveStudents(students);
+        populateStudentTable();
+      }
+    }
+
+    // Initialize
+    window.onload = function() {
+      createBubbles();
+      createFish();
+      populateStudentTable();
+    };
+  </script>
+</body>
+</html> 

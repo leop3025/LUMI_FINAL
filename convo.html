@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Conversation Challenge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="wave"></div>
+
+  <!-- Header -->
+  <header class="flex justify-between items-center p-4 bg-white shadow-md relative z-10">
+    <div class="flex items-center">
+      <img alt="Lumi logo" class="rounded-full w-10 h-10" src="https://placehold.co/40x40/0066cc/ffffff?text=LL" />
+      <h1 class="text-blue-600 text-xl font-bold ml-2">Learning with <span class="text-blue-800">Lumi</span></h1>
+    </div>
+    <nav class="flex space-x-4">
+      <a class="text-blue-800 hover:text-blue-600" href="index.html">Home</a>
+      <a class="text-blue-800 hover:text-blue-600" href="learn.html">Learn</a>
+      <a class="text-white bg-blue-500 px-4 py-2 rounded-full aqua-btn hover:bg-blue-600" href="practice.html">Practice</a>
+      <a class="text-blue-800 hover:text-blue-600" href="profile.html">Profile</a>
+    </nav>
+    <div class="flex items-center">
+      <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full shadow">3 day streak</span>
+      <img alt="User profile picture" class="rounded-full w-10 h-10 ml-2" src="https://placehold.co/40x40" />
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-2xl mx-auto mt-10 p-4 relative z-10">
+    <h2 class="text-3xl font-bold text-center mb-6 text-blue-800">Conversation Challenge</h2>
+    <p class="text-center text-blue-600 mb-6">Listen to or read the prompt and choose the most appropriate response.</p>
+
+    <!-- Conversation Card -->
+    <div class="bg-white p-6 rounded-lg shadow aqua-card text-center mb-4">
+      <p id="prompt" class="text-xl text-blue-800 font-semibold mb-4">¿Cómo estás?</p>
+
+      <div class="space-y-3">
+        <button onclick="checkAnswer(this)" data-answer="correct" class="block w-full bg-blue-100 text-blue-800 px-4 py-2 rounded-lg hover:bg-blue-200">Estoy bien, gracias.</button>
+        <button onclick="checkAnswer(this)" data-answer="wrong" class="block w-full bg-blue-100 text-blue-800 px-4 py-2 rounded-lg hover:bg-blue-200">Tengo hambre.</button>
+        <button onclick="checkAnswer(this)" data-answer="wrong" class="block w-full bg-blue-100 text-blue-800 px-4 py-2 rounded-lg hover:bg-blue-200">Me llamo Juan.</button>
+      </div>
+
+      <p id="feedback" class="mt-4 font-medium text-lg hidden"></p>
+    </div>
+
+    <div class="text-center mt-6">
+      <button onclick="nextQuestion()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full aqua-btn">Next</button>
+    </div>
+
+  </main>
+  <script>
+    // Default conversation data in case fetch fails
+    let conversationData = [
+      {
+        prompt: "¿Cómo estás?",
+        options: [
+          { text: "Estoy bien, gracias.", correct: true },
+          { text: "Tengo hambre.", correct: false },
+          { text: "Me llamo Juan.", correct: false }
+        ]
+      },
+      {
+        prompt: "¿Qué hora es?",
+        options: [
+          { text: "Son las tres.", correct: true },
+          { text: "Tengo hambre.", correct: false },
+          { text: "Me gusta el café.", correct: false }
+        ]
+      },
+      {
+        prompt: "¿Cómo te llamas?",
+        options: [
+          { text: "Me llamo Ana.", correct: true },
+          { text: "Tengo 10 años.", correct: false },
+          { text: "Estoy cansado.", correct: false }
+        ]
+      },
+      {
+        prompt: "¿De dónde eres?",
+        options: [
+          { text: "Soy de México.", correct: true },
+          { text: "Estoy en la escuela.", correct: false },
+          { text: "Tengo una hermana.", correct: false }
+        ]
+      },
+      {
+        prompt: "¿Cuántos años tienes?",
+        options: [
+          { text: "Tengo 25 años.", correct: true },
+          { text: "Me gusta el fútbol.", correct: false },
+          { text: "Estoy en casa.", correct: false }
+        ]
+      },
+      {
+        prompt: "¿Qué te gusta hacer?",
+        options: [
+          { text: "Me gusta leer y bailar.", correct: true },
+          { text: "Tengo un perro.", correct: false },
+          { text: "Soy estudiante.", correct: false }
+        ]
+      },
+      {
+        prompt: "¿Dónde vives?",
+        options: [
+          { text: "Vivo en Madrid.", correct: true },
+          { text: "Tengo dos hermanos.", correct: false },
+          { text: "Me gusta la música.", correct: false }
+        ]
+      },
+      {
+        prompt: "¿Qué tiempo hace?",
+        options: [
+          { text: "Hace sol y calor.", correct: true },
+          { text: "Tengo frío.", correct: false },
+          { text: "Me gusta el verano.", correct: false }
+        ]
+      }
+    ];
+    let currentIndex = 0;
+    
+    // Function to load conversation data
+    function loadConversationData() {
+      fetch("http://localhost:3001/api/conversationData")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            conversationData = data;
+          }
+          renderConversation();
+        })
+        .catch((err) => {
+          console.error("Failed to fetch conversation data, using default data:", err);
+          renderConversation();
+        });
+    }
+
+    function renderConversation() {
+      if (!conversationData || conversationData.length === 0) {
+        console.error("No conversation data available");
+        return;
+      }
+
+      const data = conversationData[currentIndex];
+      if (!data) {
+        console.error("Invalid conversation data at index:", currentIndex);
+        return;
+      }
+
+      document.getElementById("prompt").textContent = data.prompt;
+      const buttons = document.querySelectorAll("button[data-answer]");
+      
+      buttons.forEach((btn, i) => {
+        if (data.options && data.options[i]) {
+          btn.textContent = data.options[i].text;
+          btn.dataset.answer = data.options[i].correct ? "correct" : "wrong";
+          btn.classList.remove("bg-green-100", "bg-red-100", "bg-blue-100");
+          btn.classList.add("bg-blue-100");
+        }
+      });
+      
+      document.getElementById("feedback").classList.add("hidden");
+    }
+
+    function checkAnswer(button) {
+      const isCorrect = button.dataset.answer === "correct";
+      const feedback = document.getElementById("feedback");
+      feedback.classList.remove("hidden");
+      feedback.textContent = isCorrect ? "✅ Correct!" : "❌ Try again!";
+      feedback.classList.toggle("text-green-600", isCorrect);
+      feedback.classList.toggle("text-red-600", !isCorrect);
+
+      // Highlight buttons
+      const buttons = document.querySelectorAll("button[data-answer]");
+      buttons.forEach((btn) => {
+        btn.classList.remove("bg-green-100", "bg-red-100", "bg-blue-100");
+        btn.classList.add(
+          btn.dataset.answer === "correct" ? "bg-green-100" : "bg-red-100"
+        );
+      });
+    }
+
+    function nextQuestion() {
+      if (!conversationData || conversationData.length === 0) {
+        console.error("No conversation data available");
+        return;
+      }
+      
+      currentIndex = (currentIndex + 1) % conversationData.length;
+      renderConversation();
+    }
+
+    // Initialize when the page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      loadConversationData();
+    });
+  </script>
+</body>
+</html>

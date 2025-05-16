@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning with Lumi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Underwater Elements */
+        body {
+            position: relative;
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+        }
+
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .fish {
+            position: absolute;
+            z-index: 0;
+            animation: swim linear infinite;
+            font-size: 2rem;
+        }
+
+        @keyframes swim {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+            background-size: cover;
+            z-index: 0;
+        }
+
+        /* Custom Card Styles */
+        .aqua-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 102, 204, 0.1);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .aqua-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 102, 204, 0.2);
+        }
+
+        .aqua-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 102, 204, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .aqua-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .aqua-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .aqua-progress {
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- Underwater Elements -->
+    <div class="wave"></div>
+    
+    <div class="max-w-4xl mx-auto p-4 relative z-10">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center">
+                <img alt="Lumi logo" class="rounded-full shadow-lg w-10 h-10" src="https://placehold.co/40x40/0066cc/ffffff?text=LL"/>
+                <h1 class="text-blue-600 text-xl font-bold ml-2">
+                    Learning with Lumi
+                </h1>
+            </div>
+            <div class="flex space-x-4">
+                <a class="text-blue-800 hover:text-blue-600 transition duration-300" href="./index.html">
+                    Home
+                </a>
+                <a class="text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-full shadow-lg aqua-btn" href="#">
+                    Learn
+                </a>
+                <a class="text-blue-800 hover:text-blue-600 transition duration-300" href="./pract.html">
+                    Practice
+                </a>
+                <a class="text-blue-800 hover:text-blue-600 transition duration-300" href="./user.html">
+                    Profile
+                </a>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full shadow-lg">
+                    3 day streak
+                </div>
+                <img alt="User avatar" class="rounded-full shadow-lg w-10 h-10" src="https://placehold.co/40x40"/>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-blue-800">
+                ¡Hola, LearningLover!
+            </h2>
+            <p class="text-blue-600">
+                Continue your Spanish learning journey
+            </p>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-blue-100 text-blue-600 p-4 rounded-lg text-center shadow-lg aqua-card">
+                <p class="text-sm font-medium">
+                    Current Streak
+                </p>
+                <p class="text-2xl font-bold">
+                    3 days
+                </p>
+            </div>
+            <div class="bg-blue-100 text-blue-600 p-4 rounded-lg text-center shadow-lg aqua-card">
+                <p class="text-sm font-medium">
+                    Words Learned
+                </p>
+                <p class="text-2xl font-bold">
+                    124
+                </p>
+            </div>
+            <div class="bg-blue-100 text-blue-600 p-4 rounded-lg text-center shadow-lg aqua-card">
+                <p class="text-sm font-medium">
+                    XP Earned
+                </p>
+                <p class="text-2xl font-bold">
+                    1,300
+                </p>
+            </div>
+            <div class="bg-blue-100 text-blue-600 p-4 rounded-lg text-center shadow-lg aqua-card">
+                <p class="text-sm font-medium">
+                    Achievements
+                </p>
+                <p class="text-2xl font-bold">
+                    8/30
+                </p>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="flex items-center justify-between mb-8">
+            <p class="text-blue-600">
+                Level 5
+            </p>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mx-4 aqua-progress">
+                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 60%"></div>
+            </div>
+            <p class="text-blue-600">
+                300 / 500
+            </p>
+        </div>
+        
+        <!-- Learning Path -->
+        <div class="aqua-card p-6 mb-8">
+            <h3 class="text-xl font-bold text-blue-800 mb-4">
+                Your Learning Path
+            </h3>
+            <h4 class="text-lg font-bold text-blue-700 mb-6">
+                Your Learning Journey
+            </h4>
+            <div class="space-y-6">
+                <!-- Item 1 -->
+                <div class="flex items-center cursor-pointer hover:bg-blue-50 transition duration-200 rounded-lg p-2" onclick="window.location.href='greetings.html'">
+                    <div class="flex-shrink-0">
+                        <div class="bg-blue-100 text-blue-500 p-3 rounded-full shadow-lg">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h5 class="text-blue-800 font-bold">
+                            Greetings & Introductions
+                        </h5>
+                        <p class="text-blue-600">
+                            Learn basic Spanish greetings and how to introduce yourself.
+                        </p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 aqua-progress">
+                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="ml-4 text-blue-600">
+                        <span class="text-sm font-medium">
+                            30 XP
+                        </span>
+                    </div>
+                </div>
+          
+                
+                <!-- Item 2 -->
+                <div class="flex items-center cursor-pointer hover:bg-blue-50 transition duration-200 rounded-lg p-2" onclick="window.location.href='basicconvo.html'">
+                    <div class="flex-shrink-0">
+                        <div class="bg-blue-100 text-blue-500 p-3 rounded-full shadow-lg">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h5 class="text-blue-800 font-bold">
+                            Basic Conversations
+                        </h5>
+                        <p class="text-blue-600">
+                            Practice everyday conversations in Spanish.
+                        </p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 aqua-progress">
+                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="ml-4 text-blue-600">
+                        <span class="text-sm font-medium">
+                            35 XP
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center cursor-pointer hover:bg-blue-50 transition duration-200 rounded-lg p-2" onclick="window.location.href='numandtime.html'">
+                    <div class="flex-shrink-0">
+                        <div class="bg-blue-100 text-blue-500 p-3 rounded-full shadow-lg">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h5 class="text-blue-800 font-bold">
+                            Numbers & Time
+                        </h5>
+                        <p class="text-blue-600">
+                            Master Spanish numbers, telling time, and scheduling.
+                        </p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 aqua-progress">
+                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="ml-4 text-blue-600">
+                        <span class="text-sm font-medium">
+                            40 XP
+                        </span>
+                    </div>
+                </div>
+        
+                <!-- New Item 4 -->
+                <div class="flex items-center cursor-pointer hover:bg-blue-50 transition duration-200 rounded-lg p-2" onclick="window.location.href='food.html'">
+                    <div class="flex-shrink-0">
+                        <div class="bg-blue-100 text-blue-500 p-3 rounded-full shadow-lg">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h5 class="text-blue-800 font-bold">
+                            Food & Dining
+                        </h5>
+                        <p class="text-blue-600">
+                            Order food, understand menus, and discuss preferences.
+                        </p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 aqua-progress">
+                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="ml-4 text-blue-600">
+                        <span class="text-sm font-medium">
+                            45 XP
+                        </span>
+                    </div>
+                </div>
+        
+                <!-- New Item 5 (Current) -->
+                <div class="flex items-center cursor-pointer hover:bg-blue-50 transition duration-200 rounded-lg p-2" onclick="window.location.href='travel.html'">
+                    <div class="flex-shrink-0">
+                        <div class="bg-blue-100 text-blue-500 p-3 rounded-full shadow-lg">
+                            <i class="fas fa-book"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h5 class="text-blue-800 font-bold">
+                            Travel & Directions
+                        </h5>
+                        <p class="text-blue-600">
+                            Learn to navigate cities, ask for directions, and use transportation.
+                        </p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 aqua-progress">
+                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="ml-4 text-blue-600">
+                        <span class="text-sm font-medium">
+                            50 XP
+                        </span>
+                    </div>
+                </div>
+        
+                <!-- New Item 6 (Locked) -->
+                <div class="flex items-center opacity-70">
+                    <div class="flex-shrink-0">
+                        <div class="bg-gray-200 text-gray-500 p-3 rounded-full shadow-lg">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h5 class="text-blue-800 font-bold">
+                            Shopping & Payments
+                        </h5>
+                        <p class="text-blue-600">
+                            Bargain, understand prices, and handle transactions in Spanish.
+                        </p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 aqua-progress">
+                            <div class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="ml-4 text-blue-600">
+                        <span class="text-sm font-medium">
+                            55 XP
+                        </span>
+                    </div>
+                </div>
+        
+                <!-- New Item 7 (Locked) -->
+                <div class="flex items-center opacity-70">
+                    <div class="flex-shrink-0">
+                        <div class="bg-gray-200 text-gray-500 p-3 rounded-full shadow-lg">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h5 class="text-blue-800 font-bold">
+                            Family & Relationships
+                        </h5>
+                        <p class="text-blue-600">
+                            Talk about family members and personal relationships.
+                        </p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 aqua-progress">
+                            <div class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="ml-4 text-blue-600">
+                        <span class="text-sm font-medium">
+                            60 XP
+                        </span>
+                    </div>
+                </div>
+        
+                <!-- New Item 8 (Locked) -->
+                <div class="flex items-center opacity-70">
+                    <div class="flex-shrink-0">
+                        <div class="bg-gray-200 text-gray-500 p-3 rounded-full shadow-lg">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h5 class="text-blue-800 font-bold">
+                            Hobbies & Interests
+                        </h5>
+                        <p class="text-blue-600">
+                            Discuss your favorite activities and make plans with others.
+                        </p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2 aqua-progress">
+                            <div class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="ml-4 text-blue-600">
+                        <span class="text-sm font-medium">
+                            65 XP
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create bubbles
+        function createBubbles() {
+            const bubbleCount = 20;
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                const size = Math.random() * 15 + 5;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                bubble.style.left = `${Math.random() * 100}vw`;
+                bubble.style.bottom = `-${size}px`;
+                
+                const duration = Math.random() * 10 + 5;
+                bubble.style.animationDuration = `${duration}s`;
+                
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                
+                document.body.appendChild(bubble);
+            }
+        }
+
+        // Create fish
+        function createFish() {
+            const fishCount = 4;
+            const fishTypes = ['🐠', '🐟', '🐡', '🦈'];
+            
+            for (let i = 0; i < fishCount; i++) {
+                const fish = document.createElement('div');
+                fish.classList.add('fish');
+                fish.textContent = fishTypes[i % fishTypes.length];
+                fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+                
+                fish.style.top = `${Math.random() * 70 + 15}vh`;
+                
+                const duration = Math.random() * 20 + 20;
+                fish.style.animationDuration = `${duration}s`;
+                
+                fish.style.animationDelay = `${Math.random() * 10}s`;
+                
+                document.body.appendChild(fish);
+            }
+        }
+
+        // Initialize animations
+        window.onload = function() {
+            createBubbles();
+            createFish();
+        };
+    </script>
+</body>
+</html>

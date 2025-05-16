@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spelling Bee | AquaLearn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Underwater Elements */
+    body {
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+      background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+      min-height: 100vh;
+    }
+
+    .bubble {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: float linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .fish {
+      position: absolute;
+      z-index: 0;
+      animation: swim linear infinite;
+      font-size: 2rem;
+    }
+
+    @keyframes swim {
+      0% {
+        transform: translateX(-100px);
+      }
+      100% {
+        transform: translateX(calc(100vw + 100px));
+      }
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+      background-size: cover;
+      z-index: 0;
+    }
+
+    /* Custom Card Styles */
+    .aqua-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 102, 204, 0.1);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .aqua-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 102, 204, 0.2);
+    }
+
+    .aqua-btn {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .aqua-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
+    }
+
+    /* Spelling Bee Specific Styles */
+    .audio-btn {
+      transition: all 0.2s ease;
+    }
+
+    .audio-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .audio-btn.playing {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(0, 102, 204, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0); }
+    }
+
+    .letter-tile {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      border: 2px solid #cce0ff;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .letter-tile:hover {
+      background-color: #e6f2ff;
+    }
+
+    .letter-tile.selected {
+      background-color: #cce0ff;
+      transform: translateY(-3px);
+    }
+
+    .answer-input {
+      letter-spacing: 0.5rem;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    .feedback-correct {
+      animation: correctFeedback 0.5s ease;
+    }
+
+    .feedback-incorrect {
+      animation: incorrectFeedback 0.5s ease;
+    }
+
+    @keyframes correctFeedback {
+      0% { background-color: #d4edda; }
+      100% { background-color: rgba(255, 255, 255, 0.9); }
+    }
+
+    @keyframes incorrectFeedback {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Underwater Elements -->
+  <div class="wave"></div>
+  
+  <div class="max-w-3xl mx-auto p-4 relative z-10">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <div class="flex items-center">
+        <img alt="AquaLearn logo" class="rounded-full w-10 h-10" src="https://placehold.co/40x40/0066cc/ffffff?text=AL"/>
+        <h1 class="text-blue-600 text-xl font-bold ml-2">AquaLearn Spanish</h1>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">3 day streak</span>
+        <img alt="User avatar" class="rounded-full w-10 h-10" src="https://placehold.co/40x40"/>
+      </div>
+    </div>
+
+    <!-- Game Header -->
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-blue-800 mb-2">Spelling Bee</h2>
+      <p class="text-blue-600">Listen to the word and spell it correctly in Spanish</p>
+      <div class="flex justify-center items-center mt-4">
+        <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full">Food & Dining</span>
+        <span class="mx-4 text-blue-500">|</span>
+        <span class="text-blue-600"><i class="fas fa-star text-yellow-400"></i> 25 XP</span>
+      </div>
+    </div>
+
+    <!-- Spelling Bee Game -->
+    <div class="aqua-card p-6 mb-6">
+      <!-- Audio Player -->
+      <div class="flex flex-col items-center mb-8">
+        <button id="audioBtn" class="audio-btn bg-blue-500 text-white rounded-full w-20 h-20 flex items-center justify-center mb-4">
+          <i class="fas fa-volume-up text-3xl"></i>
+        </button>
+        <p class="text-blue-600 italic">Listen to the word</p>
+        <audio id="audioClip" src="https://example.com/spanish-word.mp3"></audio>
+      </div>
+
+      <!-- Word Display -->
+      <div class="mb-8 text-center">
+        <p class="text-blue-600 mb-2">English meaning:</p>
+        <h3 id="wordMeaning" class="text-2xl font-bold text-blue-800">"Breakfast"</h3>
+      </div>
+
+      <!-- Answer Input -->
+      <div class="mb-8">
+        <div class="flex justify-center mb-4">
+          <input id="answerInput" type="text" class="answer-input aqua-card p-4 text-center w-full max-w-md border-2 border-blue-300 focus:border-blue-500 focus:outline-none rounded-lg" placeholder="Type the Spanish word">
+        </div>
+        <div class="flex justify-center">
+          <button id="checkBtn" class="aqua-btn bg-blue-500 text-white px-8 py-3 rounded-full font-bold">
+            Check Answer
+          </button>
+        </div>
+      </div>
+
+      <!-- Feedback -->
+      <div id="feedback" class="hidden text-center p-4 rounded-lg mb-4"></div>
+
+      <!-- Letter Tiles -->
+      <div class="mb-6">
+        <p class="text-blue-600 mb-2 text-center">Need help? Use these letters:</p>
+        <div class="flex flex-wrap justify-center gap-2" id="letterTiles">
+          <!-- Letters will be generated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="flex justify-between items-center">
+        <button id="skipBtn" class="aqua-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full">
+          Skip <i class="fas fa-forward ml-2"></i>
+        </button>
+        
+        <div>
+          <span class="text-blue-600 mr-2">Score:</span>
+          <span id="score" class="font-bold">0</span>
+          <span class="text-blue-600">/5</span>
+        </div>
+        
+        <button id="hintBtn" class="aqua-btn bg-blue-100 text-blue-600 px-4 py-2 rounded-full">
+          <i class="fas fa-lightbulb mr-2"></i> Hint
+        </button>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="aqua-card p-6">
+      <h3 class="text-lg font-bold text-blue-800 mb-2">How to Play:</h3>
+      <ul class="list-disc list-inside text-blue-600 space-y-1">
+        <li>Click the speaker button to hear the Spanish word</li>
+        <li>Type what you hear in the answer box</li>
+        <li>Use the letter tiles if you need help</li>
+        <li>You can skip words or ask for hints</li>
+        <li>Try to get 5 correct answers!</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Game Data
+    const words = [
+      { spanish: "DESAYUNO", english: "Breakfast", audio: "desayuno.mp3", letters: ["D","E","S","A","Y","U","N","O"] },
+      { spanish: "HUEVOS", english: "Eggs", audio: "huevos.mp3", letters: ["H","U","E","V","O","S"] },
+      { spanish: "LECHE", english: "Milk", audio: "leche.mp3", letters: ["L","E","C","H","E"] },
+      { spanish: "PAN", english: "Bread", audio: "pan.mp3", letters: ["P","A","N"] },
+      { spanish: "FRUTA", english: "Fruit", audio: "fruta.mp3", letters: ["F","R","U","T","A"] }
+    ];
+    
+    let currentWordIndex = 0;
+    let score = 0;
+    let currentAudio = null;
+
+    // DOM Elements
+    const audioBtn = document.getElementById('audioBtn');
+    const audioClip = document.getElementById('audioClip');
+    const wordMeaning = document.getElementById('wordMeaning');
+    const answerInput = document.getElementById('answerInput');
+    const checkBtn = document.getElementById('checkBtn');
+    const feedback = document.getElementById('feedback');
+    const letterTiles = document.getElementById('letterTiles');
+    const skipBtn = document.getElementById('skipBtn');
+    const hintBtn = document.getElementById('hintBtn');
+    const scoreDisplay = document.getElementById('score');
+
+    // Initialize the game
+    function initGame() {
+      score = 0;
+      scoreDisplay.textContent = score;
+      loadWord(0);
+    }
+
+    // Load a word into the game
+    function loadWord(index) {
+      currentWordIndex = index;
+      const word = words[index];
+      
+      wordMeaning.textContent = `"${word.english}"`;
+      answerInput.value = '';
+      feedback.classList.add('hidden');
+      
+      // Set up audio
+      audioClip.src = word.audio;
+      audioBtn.classList.remove('playing');
+      audioBtn.innerHTML = '<i class="fas fa-volume-up text-3xl"></i>';
+      
+      // Create letter tiles
+      letterTiles.innerHTML = '';
+      const shuffledLetters = [...word.letters].sort(() => Math.random() - 0.5);
+      shuffledLetters.forEach(letter => {
+        const tile = document.createElement('div');
+        tile.className = 'letter-tile';
+        tile.textContent = letter;
+        tile.addEventListener('click', () => {
+          answerInput.value += letter;
+          tile.classList.add('selected');
+          setTimeout(() => tile.classList.remove('selected'), 200);
+        });
+        letterTiles.appendChild(tile);
+      });
+    }
+
+    // Check the user's answer
+    function checkAnswer() {
+      const userAnswer = answerInput.value.trim().toUpperCase();
+      const correctAnswer = words[currentWordIndex].spanish;
+      
+      if (userAnswer === correctAnswer) {
+        // Correct answer
+        score++;
+        scoreDisplay.textContent = score;
+        feedback.innerHTML = '<p class="text-green-600 font-bold"><i class="fas fa-check-circle mr-2"></i> Correct! Well done!</p>';
+        feedback.classList.remove('hidden', 'feedback-incorrect');
+        feedback.classList.add('feedback-correct');
+        
+        // Move to next word after delay
+        setTimeout(() => {
+          if (currentWordIndex < words.length - 1) {
+            loadWord(currentWordIndex + 1);
+          } else {
+            alert(`Game over! Your score: ${score}/${words.length}`);
+            initGame();
+          }
+        }, 1500);
+      } else {
+        // Incorrect answer
+        feedback.innerHTML = '<p class="text-red-600 font-bold"><i class="fas fa-times-circle mr-2"></i> Try again!</p>';
+        feedback.classList.remove('hidden', 'feedback-correct');
+        feedback.classList.add('feedback-incorrect');
+      }
+      
+      feedback.classList.remove('hidden');
+    }
+
+    // Skip to next word
+    function skipWord() {
+      if (currentWordIndex < words.length - 1) {
+        loadWord(currentWordIndex + 1);
+      } else {
+        alert(`Game over! Your score: ${score}/${words.length}`);
+        initGame();
+      }
+    }
+
+    // Give a hint
+    function giveHint() {
+      const word = words[currentWordIndex].spanish;
+      const hintLength = Math.floor(word.length / 2);
+      const hint = word.substring(0, hintLength) + '_'.repeat(word.length - hintLength);
+      alert(`Hint: The word starts with "${word.substring(0, hintLength)}" (${hint})`);
+    }
+
+    // Initialize animations and game
+    window.onload = function() {
+      createBubbles();
+      createFish();
+      initGame();
+      
+      // Audio player functionality
+      audioBtn.addEventListener('click', function() {
+        if (audioClip.paused) {
+          audioClip.play();
+          audioBtn.classList.add('playing');
+          audioBtn.innerHTML = '<i class="fas fa-pause text-3xl"></i>';
+        } else {
+          audioClip.pause();
+          audioBtn.classList.remove('playing');
+          audioBtn.innerHTML = '<i class="fas fa-volume-up text-3xl"></i>';
+        }
+      });
+      
+      audioClip.addEventListener('ended', function() {
+        audioBtn.classList.remove('playing');
+        audioBtn.innerHTML = '<i class="fas fa-volume-up text-3xl"></i>';
+      });
+
+      // Check answer when button is clicked or Enter is pressed
+      checkBtn.addEventListener('click', checkAnswer);
+      answerInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          checkAnswer();
+        }
+      });
+
+      // Skip and hint buttons
+      skipBtn.addEventListener('click', skipWord);
+      hintBtn.addEventListener('click', giveHint);
+    };
+
+    // Create bubbles
+    function createBubbles() {
+      const bubbleCount = 20;
+      for (let i = 0; i < bubbleCount; i++) {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        
+        const size = Math.random() * 15 + 5;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        
+        bubble.style.left = `${Math.random() * 100}vw`;
+        bubble.style.bottom = `-${size}px`;
+        
+        const duration = Math.random() * 10 + 5;
+        bubble.style.animationDuration = `${duration}s`;
+        
+        bubble.style.animationDelay = `${Math.random() * 5}s`;
+        
+        document.body.appendChild(bubble);
+      }
+    }
+
+    // Create fish
+    function createFish() {
+      const fishCount = 4;
+      const fishTypes = ['🐠', '🐟', '🐡', '🦈'];
+      
+      for (let i = 0; i < fishCount; i++) {
+        const fish = document.createElement('div');
+        fish.classList.add('fish');
+        fish.textContent = fishTypes[i % fishTypes.length];
+        fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+        
+        fish.style.top = `${Math.random() * 70 + 15}vh`;
+        
+        const duration = Math.random() * 20 + 20;
+        fish.style.animationDuration = `${duration}s`;
+        
+        fish.style.animationDelay = `${Math.random() * 10}s`;
+        
+        document.body.appendChild(fish);
+      }
+    }
+  </script>
+</body>
+</html>

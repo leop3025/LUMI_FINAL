@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Search | AquaLearn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Underwater Elements */
+    body {
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+      background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+      min-height: 100vh;
+    }
+
+    .bubble {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: float linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .fish {
+      position: absolute;
+      z-index: 0;
+      animation: swim linear infinite;
+      font-size: 2rem;
+    }
+
+    @keyframes swim {
+      0% {
+        transform: translateX(-100px);
+      }
+      100% {
+        transform: translateX(calc(100vw + 100px));
+      }
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+      background-size: cover;
+      z-index: 0;
+    }
+
+    /* Custom Card Styles */
+    .aqua-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 102, 204, 0.1);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .aqua-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 102, 204, 0.2);
+    }
+
+    .aqua-btn {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .aqua-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
+    }
+
+    /* Word Search Grid */
+    .wordsearch-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 2px;
+      margin: 0 auto;
+    }
+
+    .wordsearch-cell {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      border: 1px solid #cce0ff;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+
+    .wordsearch-cell:hover {
+      background-color: #e6f2ff;
+    }
+
+    .wordsearch-cell.selected {
+      background-color: #cce0ff;
+      color: #0066cc;
+    }
+
+    .wordsearch-cell.found {
+      background-color: #d4edda;
+      color: #28a745;
+    }
+
+    .word-list-item {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .word-list-item:hover {
+      color: #0066cc;
+    }
+
+    .word-list-item.found {
+      text-decoration: line-through;
+      color: #28a745;
+    }
+  </style>
+</head>
+<body>
+  <!-- Underwater Elements -->
+  <div class="wave"></div>
+  
+  <div class="max-w-3xl mx-auto p-4 relative z-10">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <div class="flex items-center">
+        <img alt="AquaLearn logo" class="rounded-full w-10 h-10" src="https://placehold.co/40x40/0066cc/ffffff?text=AL"/>
+        <h1 class="text-blue-600 text-xl font-bold ml-2">AquaLearn Spanish</h1>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">3 day streak</span>
+        <img alt="User avatar" class="rounded-full w-10 h-10" src="https://placehold.co/40x40"/>
+      </div>
+    </div>
+
+    <!-- Game Header -->
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-blue-800 mb-2">Word Search</h2>
+      <p class="text-blue-600">Find Spanish words in the puzzle below</p>
+      <div class="flex justify-center items-center mt-4">
+        <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full">Food & Dining Theme</span>
+        <span class="mx-4 text-blue-500">|</span>
+        <span class="text-blue-600"><i class="fas fa-star text-yellow-400"></i> 20 XP</span>
+      </div>
+    </div>
+
+    <!-- Word Search Container -->
+    <div class="aqua-card p-6 mb-6">
+      <div class="wordsearch-grid mb-6" id="wordsearchGrid">
+        <!-- Grid will be generated by JavaScript -->
+      </div>
+
+      <div class="flex flex-col md:flex-row justify-between">
+        <!-- Word List -->
+        <div class="mb-4 md:mb-0 md:w-1/2">
+          <h3 class="text-lg font-bold text-blue-800 mb-3">Words to Find:</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <div id="word1" class="word-list-item text-blue-800">COMIDA</div>
+            <div id="word2" class="word-list-item text-blue-800">AGUA</div>
+            <div id="word3" class="word-list-item text-blue-800">PAN</div>
+            <div id="word4" class="word-list-item text-blue-800">QUESO</div>
+            <div id="word5" class="word-list-item text-blue-800">CARNE</div>
+            <div id="word6" class="word-list-item text-blue-800">PESCADO</div>
+          </div>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="flex flex-col items-center md:items-end md:w-1/2">
+          <div class="mb-4 text-center">
+            <p class="text-blue-600 mb-2">Found: <span id="foundCount">0</span>/6 words</p>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div id="progressBar" class="bg-blue-500 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+          <button id="hintBtn" class="aqua-btn bg-blue-100 text-blue-600 px-4 py-2 rounded-full mb-2">
+            <i class="fas fa-lightbulb mr-2"></i> Get Hint
+          </button>
+          <button id="newGameBtn" class="aqua-btn bg-blue-500 text-white px-4 py-2 rounded-full">
+            <i class="fas fa-redo mr-2"></i> New Puzzle
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Instructions -->
+    <div class="aqua-card p-6">
+      <h3 class="text-lg font-bold text-blue-800 mb-2">How to Play:</h3>
+      <ul class="list-disc list-inside text-blue-600 space-y-1">
+        <li>Find the Spanish words hidden in the grid</li>
+        <li>Words can be horizontal, vertical, or diagonal</li>
+        <li>Click and drag to select letters</li>
+        <li>Found words will be crossed off the list</li>
+        <li>Complete all words to finish the puzzle!</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Word Search Data
+    const words = ["COMIDA", "AGUA", "PAN", "QUESO", "CARNE", "PESCADO"];
+    const gridSize = 10;
+    let grid = [];
+    let selectedCells = [];
+    let foundWords = [];
+    let isSelecting = false;
+
+    // Initialize the word search grid
+    function initGrid() {
+      // Create empty grid
+      grid = Array(gridSize).fill().map(() => Array(gridSize).fill(''));
+      
+      // Place words randomly
+      words.forEach(word => {
+        placeWord(word);
+      });
+      
+      // Fill remaining spaces with random letters
+      fillEmptyCells();
+      
+      // Render the grid
+      renderGrid();
+    }
+
+    // Place a word in the grid
+    function placeWord(word) {
+      const directions = [
+        { dr: 0, dc: 1 },  // horizontal
+        { dr: 1, dc: 0 },  // vertical
+        { dr: 1, dc: 1 },  // diagonal down-right
+        { dr: 1, dc: -1 }  // diagonal down-left
+      ];
+      
+      let placed = false;
+      let attempts = 0;
+      
+      while (!placed && attempts < 100) {
+        attempts++;
+        const direction = directions[Math.floor(Math.random() * directions.length)];
+        const row = Math.floor(Math.random() * gridSize);
+        const col = Math.floor(Math.random() * gridSize);
+        
+        // Check if word fits
+        const endRow = row + direction.dr * (word.length - 1);
+        const endCol = col + direction.dc * (word.length - 1);
+        
+        if (endRow < 0 || endRow >= gridSize || endCol < 0 || endCol >= gridSize) {
+          continue;
+        }
+        
+        // Check if cells are empty or contain matching letters
+        let canPlace = true;
+        for (let i = 0; i < word.length; i++) {
+          const r = row + i * direction.dr;
+          const c = col + i * direction.dc;
+          if (grid[r][c] !== '' && grid[r][c] !== word[i]) {
+            canPlace = false;
+            break;
+          }
+        }
+        
+        if (canPlace) {
+          // Place the word
+          for (let i = 0; i < word.length; i++) {
+            const r = row + i * direction.dr;
+            const c = col + i * direction.dc;
+            grid[r][c] = word[i];
+          }
+          placed = true;
+        }
+      }
+    }
+
+    // Fill empty cells with random letters
+    function fillEmptyCells() {
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+          if (grid[r][c] === '') {
+            grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
+          }
+        }
+      }
+    }
+
+    // Render the grid in the DOM
+    function renderGrid() {
+      const gridElement = document.getElementById('wordsearchGrid');
+      gridElement.innerHTML = '';
+      
+      for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'wordsearch-cell';
+          cell.textContent = grid[r][c];
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+          
+          cell.addEventListener('mousedown', (e) => {
+            isSelecting = true;
+            selectedCells = [{row: r, col: c}];
+            updateSelection();
+            e.preventDefault(); // Prevent text selection
+          });
+          
+          cell.addEventListener('mouseenter', () => {
+            if (isSelecting) {
+              selectedCells.push({row: r, col: c});
+              updateSelection();
+            }
+          });
+          
+          gridElement.appendChild(cell);
+        }
+      }
+    }
+
+    // Update selected cells appearance
+    function updateSelection() {
+      // Clear previous selection
+      document.querySelectorAll('.wordsearch-cell').forEach(cell => {
+        cell.classList.remove('selected');
+      });
+      
+      // Highlight selected cells
+      selectedCells.forEach(cell => {
+        const index = cell.row * gridSize + cell.col;
+        document.querySelectorAll('.wordsearch-cell')[index].classList.add('selected');
+      });
+    }
+
+    // Check if selected cells form a valid word
+    function checkSelection() {
+      if (selectedCells.length < 2) return;
+      
+      // Get the word from selected cells
+      let word = '';
+      selectedCells.forEach(cell => {
+        word += grid[cell.row][cell.col];
+      });
+      
+      // Check if word is in our list (forward or backward)
+      if (words.includes(word) || words.includes(word.split('').reverse().join(''))) {
+        // Mark cells as found
+        selectedCells.forEach(cell => {
+          const index = cell.row * gridSize + cell.col;
+          document.querySelectorAll('.wordsearch-cell')[index].classList.add('found');
+        });
+        
+        // Mark word as found in list
+        const wordToMark = words.includes(word) ? word : word.split('').reverse().join('');
+        const wordIndex = words.indexOf(wordToMark);
+        document.getElementById(`word${wordIndex + 1}`).classList.add('found');
+        
+        // Add to found words if not already there
+        if (!foundWords.includes(wordToMark)) {
+          foundWords.push(wordToMark);
+          updateProgress();
+        }
+      }
+      
+      // Clear selection
+      selectedCells = [];
+      updateSelection();
+    }
+
+    // Update progress display
+    function updateProgress() {
+      document.getElementById('foundCount').textContent = foundWords.length;
+      const progress = (foundWords.length / words.length) * 100;
+      document.getElementById('progressBar').style.width = `${progress}%`;
+      
+      if (foundWords.length === words.length) {
+        setTimeout(() => {
+          alert('Congratulations! You found all the words!');
+        }, 300);
+      }
+    }
+
+    // Initialize animations and game
+    window.onload = function() {
+      createBubbles();
+      createFish();
+      initGrid();
+      
+      // End selection when mouse is released anywhere
+      document.addEventListener('mouseup', () => {
+        if (isSelecting) {
+          isSelecting = false;
+          checkSelection();
+        }
+      });
+      
+      // Hint button
+      document.getElementById('hintBtn').addEventListener('click', () => {
+        if (foundWords.length < words.length) {
+          const remainingWords = words.filter(word => !foundWords.includes(word));
+          const hintWord = remainingWords[Math.floor(Math.random() * remainingWords.length)];
+          alert(`Hint: Try looking for "${hintWord}"`);
+        } else {
+          alert('You already found all the words!');
+        }
+      });
+      
+      // New game button
+      document.getElementById('newGameBtn').addEventListener('click', () => {
+        foundWords = [];
+        document.querySelectorAll('.word-list-item').forEach(item => {
+          item.classList.remove('found');
+        });
+        document.getElementById('foundCount').textContent = '0';
+        document.getElementById('progressBar').style.width = '0%';
+        initGrid();
+      });
+    };
+
+    // Create bubbles
+    function createBubbles() {
+      const bubbleCount = 20;
+      for (let i = 0; i < bubbleCount; i++) {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        
+        const size = Math.random() * 15 + 5;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        
+        bubble.style.left = `${Math.random() * 100}vw`;
+        bubble.style.bottom = `-${size}px`;
+        
+        const duration = Math.random() * 10 + 5;
+        bubble.style.animationDuration = `${duration}s`;
+        
+        bubble.style.animationDelay = `${Math.random() * 5}s`;
+        
+        document.body.appendChild(bubble);
+      }
+    }
+
+    // Create fish
+    function createFish() {
+      const fishCount = 4;
+      const fishTypes = ['🐠', '🐟', '🐡', '🦈'];
+      
+      for (let i = 0; i < fishCount; i++) {
+        const fish = document.createElement('div');
+        fish.classList.add('fish');
+        fish.textContent = fishTypes[i % fishTypes.length];
+        fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+        
+        fish.style.top = `${Math.random() * 70 + 15}vh`;
+        
+        const duration = Math.random() * 20 + 20;
+        fish.style.animationDuration = `${duration}s`;
+        
+        fish.style.animationDelay = `${Math.random() * 10}s`;
+        
+        document.body.appendChild(fish);
+      }
+    }
+  </script>
+</body>
+</html>

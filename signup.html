@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up | Learning with Lumi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Ocean Theme Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Underwater Elements */
+    .bubble {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: float linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .fish {
+      position: absolute;
+      z-index: -1;
+      animation: swim linear infinite;
+    }
+
+    @keyframes swim {
+      0% {
+        transform: translateX(-100px);
+      }
+      100% {
+        transform: translateX(calc(100vw + 100px));
+      }
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+      background-size: cover;
+      z-index: -1;
+    }
+
+    /* Sign Up Container */
+    .signup-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .signup-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .signup-title {
+      font-size: 2rem;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+
+    .signup-subtitle {
+      color: #2d5985;
+      font-size: 1rem;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #2d5985;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #e0f7fa;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #0066cc;
+    }
+
+    /* User Type Selection */
+    .user-type {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .user-type-btn {
+      flex: 1;
+      padding: 0.8rem;
+      border: 2px solid #e0f7fa;
+      border-radius: 8px;
+      background-color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .user-type-btn.active {
+      background-color: #0066cc;
+      color: white;
+      border-color: #0066cc;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #0055aa;
+      transform: translateY(-2px);
+    }
+
+    /* Error Message */
+    .error-message {
+      color: #f44336;
+      text-align: center;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    /* Login Link */
+    .login-link {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .login-link a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 480px) {
+      .signup-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Underwater Elements -->
+  <div class="wave"></div>
+
+  <!-- Sign Up Container -->
+  <div class="signup-container">
+    <div class="signup-header">
+      <h1 class="signup-title">Create Account</h1>
+      <p class="signup-subtitle">Join Learning with Lumi today!</p>
+    </div>
+
+    <form id="signupForm">
+      <div class="user-type">
+        <button type="button" class="user-type-btn active" data-type="student">Student</button>
+        <button type="button" class="user-type-btn" data-type="teacher">Teacher</button>
+      </div>
+
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+      </div>
+
+      <button type="submit" class="submit-btn">Sign Up</button>
+      <div class="error-message" id="errorMessage"></div>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+  </div>
+
+  <script>
+    // Underwater animations
+    window.onload = function() {
+      createBubbles();
+      createFish();
+    };
+
+    function createBubbles() {
+      const bubbleCount = 20;
+      for (let i = 0; i < bubbleCount; i++) {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        
+        const size = Math.random() * 15 + 5;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        
+        bubble.style.left = `${Math.random() * 100}vw`;
+        bubble.style.bottom = `-${size}px`;
+        
+        const duration = Math.random() * 10 + 5;
+        bubble.style.animationDuration = `${duration}s`;
+        
+        bubble.style.animationDelay = `${Math.random() * 5}s`;
+        
+        document.body.appendChild(bubble);
+      }
+    }
+
+    function createFish() {
+      const fishCount = 4;
+      const fishTypes = ['🐠', '🐟', '🐡', '🦈'];
+      
+      for (let i = 0; i < fishCount; i++) {
+        const fish = document.createElement('div');
+        fish.classList.add('fish');
+        fish.textContent = fishTypes[i % fishTypes.length];
+        fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+        
+        fish.style.top = `${Math.random() * 70 + 15}vh`;
+        
+        const duration = Math.random() * 20 + 20;
+        fish.style.animationDuration = `${duration}s`;
+        
+        fish.style.animationDelay = `${Math.random() * 10}s`;
+        
+        document.body.appendChild(fish);
+      }
+    }
+
+    // User type selection
+    const userTypeBtns = document.querySelectorAll('.user-type-btn');
+    let currentUserType = 'student';
+
+    userTypeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        userTypeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentUserType = btn.dataset.type;
+      });
+    });
+
+    // Sign up form handling
+    const signupForm = document.getElementById('signupForm');
+    const errorMessage = document.getElementById('errorMessage');
+
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Validate passwords match
+      if (password !== confirmPassword) {
+        errorMessage.textContent = 'Passwords do not match';
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      // Validate password strength
+      if (password.length < 6) {
+        errorMessage.textContent = 'Password must be at least 6 characters long';
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      try {
+        // Get existing users from localStorage or initialize empty arrays
+        const userData = JSON.parse(localStorage.getItem('userData') || '{"teachers":[],"students":[]}');
+        
+        // Check if username already exists
+        const existingUsers = [...userData.teachers, ...userData.students];
+        if (existingUsers.some(user => user.username === username)) {
+          errorMessage.textContent = 'Username already exists';
+          errorMessage.style.display = 'block';
+          return;
+        }
+
+        // Create new user object
+        const newUser = {
+          id: `${currentUserType.charAt(0)}${userData[currentUserType + 's'].length + 1}`,
+          username,
+          password,
+          email,
+          name
+        };
+
+        // Add additional fields based on user type
+        if (currentUserType === 'student') {
+          newUser.level = 'beginner';
+          newUser.progress = {
+            greetings: 0,
+            listening: 0
+          };
+        }
+
+        // Add user to appropriate array
+        userData[currentUserType + 's'].push(newUser);
+
+        // Save updated user data
+        localStorage.setItem('userData', JSON.stringify(userData));
+
+        // Store user data in sessionStorage for immediate login
+        sessionStorage.setItem('currentUser', JSON.stringify({
+          type: currentUserType,
+          id: newUser.id,
+          name: newUser.name,
+          username: newUser.username
+        }));
+
+        // Redirect based on user type
+        if (currentUserType === 'student') {
+          window.location.href = 'greetings.html';
+        } else {
+          window.location.href = 'teacher.html';
+        }
+      } catch (error) {
+        console.error('Error during signup:', error);
+        errorMessage.textContent = 'An error occurred. Please try again.';
+        errorMessage.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumi Spanish Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Underwater Elements */
+    body {
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+      background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+      min-height: 100vh;
+    }
+
+    .bubble {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: float linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .fish {
+      position: absolute;
+      z-index: 0;
+      animation: swim linear infinite;
+      font-size: 2rem;
+    }
+
+    @keyframes swim {
+      0% {
+        transform: translateX(-100px);
+      }
+      100% {
+        transform: translateX(calc(100vw + 100px));
+      }
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+      background-size: cover;
+      z-index: 0;
+    }
+
+    /* Custom Card Styles */
+    .aqua-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 102, 204, 0.1);
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .aqua-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 102, 204, 0.2);
+    }
+
+    .aqua-btn {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .aqua-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
+    }
+
+    /* Chat Styles */
+    .chat-container {
+      height: 60vh;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    .chat-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      margin-bottom: 8px;
+      position: relative;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .user-bubble {
+      background-color: #0066cc;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bot-bubble {
+      background-color: #e6f2ff;
+      color: #0066cc;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .typing-indicator {
+      display: inline-block;
+    }
+
+    .typing-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #0066cc;
+      margin-right: 4px;
+      animation: typingAnimation 1.4s infinite both;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingAnimation {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+
+    .input-field {
+      transition: all 0.3s ease;
+      border: 2px solid #cce0ff;
+    }
+
+    .input-field:focus {
+      border-color: #0066cc;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <!-- Underwater Elements -->
+  <div class="wave"></div>
+  
+  <div class="max-w-3xl mx-auto p-4 relative z-10 min-h-screen flex flex-col">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <img alt="Lumi logo" class="rounded-full w-10 h-10" src="https://placehold.co/40x40/0066cc/ffffff?text=LL"/>
+        <h1 class="text-blue-600 text-xl font-bold ml-2">Lumi Spanish Assistant</h1>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">Online</span>
+        <img alt="User avatar" class="rounded-full w-10 h-10" src="https://placehold.co/40x40"/>
+      </div>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="aqua-card flex-grow flex flex-col p-4 mb-4">
+      <div id="chatContainer" class="chat-container flex flex-col space-y-2 p-4">
+        <!-- Welcome Message -->
+        <div class="bot-bubble chat-bubble">
+          <div class="flex items-center mb-2">
+            <img src="https://placehold.co/30x30/0066cc/ffffff?text=AL" class="rounded-full mr-2 w-6 h-6">
+            <span class="font-bold">AquaBot</span>
+          </div>
+          <p>¡Hola! 👋 I'm AquaBot, your Spanish learning assistant. I can help you with:</p>
+          <ul class="list-disc pl-5 mt-2">
+            <li>Grammar questions</li>
+            <li>Vocabulary explanations</li>
+            <li>Sentence structure</li>
+            <li>Pronunciation tips</li>
+            <li>Cultural insights</li>
+          </ul>
+          <p class="mt-2">What would you like to know today?</p>
+        </div>
+        
+        <!-- Example questions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+          <button onclick="sendExampleQuestion(this)" class="aqua-btn bg-blue-100 text-blue-600 px-3 py-2 rounded-full text-sm text-left">
+            How do I use "ser" vs "estar"?
+          </button>
+          <button onclick="sendExampleQuestion(this)" class="aqua-btn bg-blue-100 text-blue-600 px-3 py-2 rounded-full text-sm text-left">
+            What's the difference between "por" and "para"?
+          </button>
+          <button onclick="sendExampleQuestion(this)" class="aqua-btn bg-blue-100 text-blue-600 px-3 py-2 rounded-full text-sm text-left">
+            How do I conjugate irregular verbs?
+          </button>
+          <button onclick="sendExampleQuestion(this)" class="aqua-btn bg-blue-100 text-blue-600 px-3 py-2 rounded-full text-sm text-left">
+            Can you explain the subjunctive mood?
+          </button>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="mt-auto p-2">
+        <div id="chatForm" class="flex space-x-2">
+          <input 
+            id="userInput" 
+            type="text" 
+            class="input-field flex-grow p-3 rounded-lg focus:outline-none" 
+            placeholder="Ask your Spanish question..." 
+            autocomplete="off"
+            required
+          >
+          <button onclick="sendMessage()" class="aqua-btn bg-blue-500 text-white px-4 py-3 rounded-lg">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="flex justify-center space-x-2 mb-4">
+      <button onclick="sendQuickQuestion('Give me some common Spanish phrases')" class="aqua-btn bg-blue-100 text-blue-600 px-3 py-2 rounded-full text-sm">
+        <i class="fas fa-comment-dots mr-1"></i> Common Phrases
+      </button>
+      <button onclick="sendQuickQuestion('Explain Spanish verb tenses')" class="aqua-btn bg-blue-100 text-blue-600 px-3 py-2 rounded-full text-sm">
+        <i class="fas fa-book mr-1"></i> Verb Tenses
+      </button>
+      <button onclick="sendQuickQuestion('Help with pronunciation')" class="aqua-btn bg-blue-100 text-blue-600 px-3 py-2 rounded-full text-sm">
+        <i class="fas fa-volume-up mr-1"></i> Pronunciation
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Create bubbles
+    function createBubbles() {
+      const bubbleCount = 20;
+      for (let i = 0; i < bubbleCount; i++) {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        
+        const size = Math.random() * 15 + 5;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        
+        bubble.style.left = `${Math.random() * 100}vw`;
+        bubble.style.bottom = `-${size}px`;
+        
+        const duration = Math.random() * 10 + 5;
+        bubble.style.animationDuration = `${duration}s`;
+        
+        bubble.style.animationDelay = `${Math.random() * 5}s`;
+        
+        document.body.appendChild(bubble);
+      }
+    }
+
+    // Create fish
+    function createFish() {
+      const fishCount = 4;
+      const fishTypes = ['🐠', '🐟', '🐡', '🦈'];
+      
+      for (let i = 0; i < fishCount; i++) {
+        const fish = document.createElement('div');
+        fish.classList.add('fish');
+        fish.textContent = fishTypes[i % fishTypes.length];
+        fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+        
+        fish.style.top = `${Math.random() * 70 + 15}vh`;
+        
+        const duration = Math.random() * 20 + 20;
+        fish.style.animationDuration = `${duration}s`;
+        
+        fish.style.animationDelay = `${Math.random() * 10}s`;
+        
+        document.body.appendChild(fish);
+      }
+    }
+
+    // Expanded knowledge base
+    const knowledgeBase = {
+      "ser vs estar": {
+        keywords: ["ser", "estar", "to be", "difference"],
+        response: `"Ser" and "estar" both mean "to be" but have distinct uses:
+
+<b>Ser</b> is used for:
+- Permanent characteristics: <i>Soy alto</i> (I am tall)
+- Origin: <i>Soy de México</i> (I'm from Mexico)
+- Profession: <i>Soy profesor</i> (I'm a teacher)
+- Time/date: <i>Son las tres</i> (It's three o'clock)
+- Possession: <i>Es mi libro</i> (It's my book)
+
+<b>Estar</b> is used for:
+- Temporary states: <i>Estoy cansado</i> (I'm tired)
+- Locations: <i>Estoy en casa</i> (I'm at home)
+- Conditions: <i>Está roto</i> (It's broken)
+- Progressive tenses: <i>Estoy comiendo</i> (I'm eating)
+- Result of actions: <i>Está terminado</i> (It's finished)
+
+Quick tip: Use "ser" for inherent qualities and "estar" for states or locations. Want an example for a specific context?"`
+      },
+      "por vs para": {
+        keywords: ["por", "para", "difference", "for"],
+        response: `The prepositions "por" and "para" both translate to "for" but are used differently:
+
+<b>Por</b> indicates:
+- Duration: <i>Estudié por dos horas</i> (I studied for two hours)
+- Reason/cause: <i>Lo hice por amor</i> (I did it for love)
+- Means/method: <i>Hablé por teléfono</i> (I spoke by phone)
+- Exchange: <i>Pagué $10 por el libro</i> (I paid $10 for the book)
+- Movement through: <i>Caminé por el parque</i> (I walked through the park)
+
+<b>Para</b> indicates:
+- Destination: <i>Salgo para Madrid</i> (I'm leaving for Madrid)
+- Purpose: <i>Estudio para aprender</i> (I study to learn)
+- Deadline: <i>Es para el lunes</i> (It's for Monday)
+- Recipient: <i>Es para ti</i> (It's for you)
+- Comparison: <i>Para un niño, lee bien</i> (For a child, he reads well)
+
+Mnemonic: "Por" often relates to cause or movement, "para" to purpose or destination. Need help with a specific sentence?"`
+      },
+      "irregular verbs": {
+        keywords: ["irregular", "verbs", "conjugate", "conjugation"],
+        response: `Irregular verbs in Spanish don't follow standard conjugation patterns. Here are key examples:
+
+1. <b>Ser</b> (to be): soy, eres, es, somos, sois, son
+2. <b>Ir</b> (to go): voy, vas, va, vamos, vais, van
+3. <b>Tener</b> (to have): tengo, tienes, tiene, tenemos, tenéis, tienen
+4. <b>Hacer</b> (to do/make): hago, haces, hace, hacemos, hacéis, hacen
+5. <b>Decir</b> (to say): digo, dices, dice, decimos, decís, dicen
+
+Patterns to note:
+- Stem-changing verbs (e.g., <i>poder</i>: puedo, puedes, puede) change vowels (o→ue, e→ie, e→i)
+- "Yo" form often has unique irregularities (e.g., <i>saber</i>: sé)
+- Some verbs are fully irregular and need memorization
+
+Would you like conjugation details for a specific verb or tense?"`
+      },
+      "subjunctive mood": {
+        keywords: ["subjunctive", "mood", "tense", "when to use"],
+        response: `The subjunctive mood expresses doubt, desire, or hypothetical situations. Use it for:
+
+1. <b>Doubt/uncertainty</b>: <i>No creo que venga</i> (I don't think he's coming)
+2. <b>Desires</b>: <i>Quiero que estudies</i> (I want you to study)
+3. <b>Emotions</b>: <i>Me alegra que estés aquí</i> (I'm happy you're here)
+4. <b>Impersonal expressions</b>: <i>Es importante que practiques</i> (It's important you practice)
+5. <b>Recommendations</b>: <i>Sugiero que leas</i> (I suggest you read)
+
+<b>Formation</b>:
+- Take the present tense "yo" form (e.g., hablar → hablo)
+- Drop the -o (habl-)
+- Add opposite endings:
+  - AR verbs: e, es, e, emos, éis, en (<i>hable, hables...</i>)
+  - ER/IR verbs: a, as, a, amos, áis, an (<i>comas, vivas...</i>)
+
+Want to practice with a specific verb or see more examples?"`
+      },
+      "common phrases": {
+        keywords: ["phrases", "common", "expressions", "sayings"],
+        response: `Essential Spanish phrases for everyday use:
+
+<b>Greetings</b>:
+- <i>Hola</i> (Hello)
+- <i>Buenos días/tardes/noches</i> (Good morning/afternoon/evening)
+- <i>¿Qué tal?</i> (What's up?)
+
+<b>Introductions</b>:
+- <i>Me llamo...</i> (My name is...)
+- <i>¿Cómo te llamas?</i> (What's your name?)
+- <i>Encantado/a</i> (Pleased to meet you)
+
+<b>Politeness</b>:
+- <i>Por favor</i> (Please)
+- <i>Gracias/De nada</i> (Thank you/You're welcome)
+- <i>Perdón/Lo siento</i> (Sorry)
+
+<b>Survival</b>:
+- <i>¿Dónde está...?</i> (Where is...?)
+- <i>No entiendo</i> (I don't understand)
+- <i>¿Hablas inglés?</i> (Do you speak English?)
+- <i>¿Cuánto cuesta?</i> (How much is it?)
+
+Would you like phrases for a specific situation (e.g., travel, dining)?"`
+      },
+      "verb tenses": {
+        keywords: ["tenses", "verb", "conjugation", "time"],
+        response: `Key Spanish verb tenses and their uses:
+
+1. <b>Presente</b>: <i>Hablo</i> (I speak) - habits, facts, current actions
+2. <b>Pretérito perfecto</b>: <i>He hablado</i> (I have spoken) - recent past, experiences
+3. <b>Pretérito</b>: <i>Hablé</i> (I spoke) - completed past actions
+4. <b>Imperfecto</b>: <i>Hablaba</i> (I was speaking) - ongoing past, descriptions
+5. <b>Futuro</b>: <i>Hablaré</i> (I will speak) - future actions
+6. <b>Condicional</b>: <i>Hablaría</i> (I would speak) - hypotheticals
+7. <b>Subjuntivo presente</b>: <i>Hable</i> (I speak [subjunctive]) - doubt, desire
+
+Each tense has regular and irregular forms. Want to focus on one tense or a specific verb?"`
+      },
+      "pronunciation": {
+        keywords: ["pronunciation", "pronounce", "speak", "accent"],
+        response: `Spanish pronunciation guide:
+
+<b>Vowels</b> (consistent sounds):
+- A: "ah" (<i>casa</i>)
+- E: "eh" (<i>mesa</i>)
+- I: "ee" (<i>mi</i>)
+- O: "oh" (<i>hola</i>)
+- U: "oo" (<i>luna</i>)
+
+<b>Key Consonants</b>:
+- B/V: soft "b" sound (<i>boca, vaca</i>)
+- C: before e/i, "th" in Spain, "s" in Latin America (<i>cielo</i>)
+- G: before e/i, "h" sound (<i>gente</i>)
+- H: silent (<i>hola</i>)
+- J: "h" sound (<i>jardín</i>)
+- LL: "y" sound (<i>llave</i>)
+- Ñ: "ny" sound (<i>niño</i>)
+- R/RR: rolled, stronger for RR (<i>ratón, perro</i>)
+
+<b>Stress</b>:
+- Vowel/n/s ending: penultimate syllable (<i>casa, joven</i>)
+- Consonant ending: last syllable (<i>hablar</i>)
+- Accent mark overrides (<i>café, música</i>)
+
+Need help pronouncing a specific word?"`
+      },
+      "greetings": {
+        keywords: ["greetings", "hello", "hi", "good morning"],
+        response: `Spanish greetings for different contexts:
+
+<b>Casual</b>:
+- <i>Hola</i> (Hello)
+- <i>¿Qué tal?</i> (What's up?)
+- <i>Buenas</i> (Hi, informal)
+
+<b>Formal/Time-based</b>:
+- <i>Buenos días</i> (Good morning)
+- <i>Buenas tardes</i> (Good afternoon)
+- <i>Buenas noches</i> (Good evening/night)
+
+<b>Introductions</b>:
+- <i>Encantado/a</i> (Pleased to meet you)
+- <i>¿Cómo estás?</i> (How are you?)
+- <i>Mucho gusto</i> (Nice to meet you)
+
+Want to learn greetings for a specific situation or time of day?"`
+      },
+      "numbers": {
+        keywords: ["numbers", "count", "digits", "how many"],
+        response: `Spanish numbers guide:
+
+<b>1-10</b>: uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, diez
+<b>11-15</b>: once, doce, trece, catorce, quince
+<b>16-19</b>: dieciséis, diecisiete, dieciocho, diecinueve
+<b>20-100</b>: veinte, treinta, cuarenta, cincuenta, sesenta, setenta, ochenta, noventa, cien
+<b>Hundreds</b>: cien, doscientos, trescientos, etc.
+<b>Thousands</b>: mil, dos mil, etc.
+
+Rules:
+- Numbers 16-29 combine with <i>y</i> (e.g., <i>veintiuno</i>)
+- Use <i>un</i> before masculine nouns, <i>una</i> before feminine
+- <i>Cien</i> becomes <i>ciento</i> for 101+ (<i>ciento uno</i>)
+
+Want to practice counting or learn ordinal numbers (first, second)?"`
+      },
+      "culture": {
+        keywords: ["culture", "customs", "traditions", "spain", "latin america"],
+        response: `Spanish-speaking cultural insights:
+
+<b>Greetings</b>: Handshakes are common, but close friends may kiss on both cheeks (especially in Spain).
+<b>Meals</b>: Lunch (comida) is often the main meal, eaten around 2-3 PM. Dinner is late (8-10 PM).
+<b>Siesta</b>: In Spain, some businesses close midday for rest, though this is less common now.
+<b>Festivals</b>: 
+  - Spain: La Tomatina, Running of the Bulls
+  - Mexico: Día de los Muertos
+  - Argentina: Tango festivals
+<b>Formality</b>: Use <i>usted</i> for respect, especially with elders or strangers.
+
+Each Spanish-speaking country has unique traditions. Want details about a specific country or custom?"`
+      }
+    };
+
+    const defaultResponses = [
+      "Hmm, I didn't catch that. Could you rephrase or ask about Spanish grammar, vocabulary, or culture?",
+      "Not sure about that one! Try asking about verbs, phrases, or pronunciation for a quick answer.",
+      "I can help with Spanish learning! Ask about 'ser vs estar', 'subjunctive', or common phrases to get started."
+    ];
+
+    // Context retention
+    let lastTopic = null;
+
+    // Sanitize input to prevent XSS
+    function sanitizeInput(input) {
+      const div = document.createElement('div');
+      div.textContent = input;
+      return div.innerHTML;
+    }
+
+    // Add message to chat
+    function addMessage(sender, message, isHTML = false) {
+      const chatContainer = document.getElementById('chatContainer');
+      const messageDiv = document.createElement('div');
+      
+      messageDiv.classList.add('chat-bubble');
+      messageDiv.classList.add(sender === 'user' ? 'user-bubble' : 'bot-bubble');
+      
+      if (sender === 'bot') {
+        const botHeader = document.createElement('div');
+        botHeader.className = 'flex items-center mb-2';
+        botHeader.innerHTML = `
+          <img src="https://placehold.co/30x30/0066cc/ffffff?text=AL" class="rounded-full mr-2 w-6 h-6">
+          <span class="font-bold">AquaBot</span>
+        `;
+        messageDiv.appendChild(botHeader);
+      }
+      
+      if (isHTML) {
+        messageDiv.innerHTML += message;
+      } else {
+        const messageContent = document.createElement('p');
+        messageContent.textContent = message;
+        messageDiv.appendChild(messageContent);
+      }
+      
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Show typing indicator
+    function showTypingIndicator() {
+      const chatContainer = document.getElementById('chatContainer');
+      const typingDiv = document.createElement('div');
+      typingDiv.classList.add('bot-bubble', 'chat-bubble');
+      
+      const typingContent = document.createElement('div');
+      typingContent.className = 'flex items-center';
+      typingContent.innerHTML = `
+        <img src="https://placehold.co/30x30/0066cc/ffffff?text=AL" class="rounded-full mr-2 w-6 h-6">
+        <div class="typing-indicator">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      `;
+      
+      typingDiv.appendChild(typingContent);
+      chatContainer.appendChild(typingDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+      
+      return typingDiv;
+    }
+
+    // Hide typing indicator
+    function hideTypingIndicator(typingDiv) {
+      typingDiv.remove();
+    }
+
+    // Find best response from knowledge base
+    function findBestResponse(userInput) {
+      const lowerInput = userInput.toLowerCase().replace(/[¿?¡!.,]/g, '');
+      let bestMatch = null;
+      let highestScore = 0;
+
+      // Check each topic in knowledge base
+      for (const topic in knowledgeBase) {
+        const keywords = knowledgeBase[topic].keywords;
+        let score = 0;
+
+        // Count matching keywords
+        keywords.forEach(keyword => {
+          if (lowerInput.includes(keyword)) {
+            score += 1;
+          }
+        });
+
+        // Bonus for recent topic continuity
+        if (lastTopic === topic && score > 0) {
+          score += 0.5;
+        }
+
+        if (score > highestScore) {
+          highestScore = score;
+          bestMatch = topic;
+        }
+      }
+
+      // If no match or low score, return default
+      if (!bestMatch || highestScore < 0.5) {
+        const randomIndex = Math.floor(Math.random() * defaultResponses.length);
+        return { response: defaultResponses[randomIndex], topic: null };
+      }
+
+      lastTopic = bestMatch;
+      return { response: knowledgeBase[bestMatch].response, topic: bestMatch };
+    }
+
+    // Process user input
+    async function processUserInput(userInput) {
+      const sanitizedInput = sanitizeInput(userInput);
+      const { response, topic } = findBestResponse(sanitizedInput);
+      
+      const typingIndicator = showTypingIndicator();
+      
+      // Faster response time (800-1500ms)
+      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 700));
+      
+      hideTypingIndicator(typingIndicator);
+      addMessage('bot', response, true);
+    }
+
+    // Send user message
+    function sendMessage() {
+      const userInput = document.getElementById('userInput');
+      const message = userInput.value.trim();
+      
+      if (message) {
+        addMessage('user', message);
+        userInput.value = '';
+        processUserInput(message);
+      }
+    }
+
+    // Send example questions
+    function sendExampleQuestion(button) {
+      const question = button.textContent.trim();
+      addMessage('user', question);
+      processUserInput(question);
+    }
+
+    // Send quick questions
+    function sendQuickQuestion(question) {
+      addMessage('user', question);
+      processUserInput(question);
+    }
+
+    // Event listener for Enter key
+    document.getElementById('userInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Initialize animations and focus input
+    window.onload = function() {
+      createBubbles();
+      createFish();
+      document.getElementById('userInput').focus();
+    };
+  </script>
+</body>
+</html>

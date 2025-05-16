@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Conversations | Learning with Lumi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Ocean Theme Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #e0f7fa, #b2ebf2, #80deea);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Underwater Elements */
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .fish {
+            position: absolute;
+            z-index: -1;
+            animation: swim linear infinite;
+        }
+
+        @keyframes swim {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%230066cc"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%230066cc"/></svg>');
+            background-size: cover;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: #2d5985;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-links li a:hover {
+            color: #0066cc;
+            background-color: rgba(0, 102, 204, 0.1);
+        }
+
+        .nav-links li a.active {
+            color: white;
+            background-color: #0066cc;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            padding-bottom: 120px; /* Space for wave */
+        }
+
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .lesson-title {
+            font-size: 2.5rem;
+            color: #0066cc;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .lesson-subtitle {
+            font-size: 1.2rem;
+            color: #2d5985;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            font-weight: 500;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .lesson-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 102, 204, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 102, 204, 0.2);
+        }
+
+        .lesson-section h2 {
+            color: #0066cc;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            position: relative;
+        }
+
+        .lesson-section h2::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #0066cc;
+            border-radius: 3px;
+        }
+
+        /* Conversation Cards */
+        .conversation-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 102, 204, 0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #0066cc;
+        }
+
+        .conversation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 102, 204, 0.15);
+        }
+
+        .conversation-line {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        .spanish-line {
+            background-color: #e3f2fd;
+            font-weight: 500;
+        }
+
+        .english-line {
+            background-color: #e8f5e9;
+            font-style: italic;
+            color: #2e7d32;
+        }
+
+        .conversation-card .translation {
+            font-style: italic;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Practice Section */
+        .practice-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.1);
+        }
+
+        .practice-question {
+            margin-bottom: 2rem;
+        }
+
+        .practice-question h3 {
+            color: #0066cc;
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .option {
+            background-color: white;
+            border: 2px solid #0066cc;
+            border-radius: 30px;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #0066cc;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background-color: #e6f2ff;
+        }
+
+        .option.selected {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        .option.correct {
+            background-color: #4caf50;
+            border-color: #4caf50;
+            color: white;
+        }
+
+        .option.incorrect {
+            background-color: #f44336;
+            border-color: #f44336;
+            color: white;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #2e7d32;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #c62828;
+            display: block;
+        }
+
+        .next-btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 0.9rem 2.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            display: inline-block;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .next-btn:hover {
+            background-color: #0055aa;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 102, 204, 0.2);
+        }
+
+        .next-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Audio Button */
+        .audio-btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .audio-btn:hover {
+            background-color: #0055aa;
+            transform: scale(1.1);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            margin: 2rem 0;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #0066cc;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .lesson-title {
+                font-size: 2rem;
+            }
+            
+            .lesson-section {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="https://placehold.co/40x40/0066cc/ffffff?text=LL" alt="Lumi Logo">
+                Learning with Lumi
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#" class="active">Learn</a></li>
+                <li><a href="pract.html">Practice</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Underwater Elements -->
+    <div class="wave"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header class="lesson-header">
+            <h1 class="lesson-title">Basic Conversations</h1>
+            <p class="lesson-subtitle">Practice everyday conversations in Spanish</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </header>
+
+        <div class="lesson-content">
+            <section class="lesson-section">
+                <h2>At the Restaurant</h2>
+                
+                <div class="conversation-card">
+                    <div class="conversation-line spanish-line">
+                        <strong>Mesero:</strong> Buenas tardes, ¿para cuántas personas?
+                        <button class="audio-btn" onclick="playAudio('restaurant1')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Waiter:</strong> Good afternoon, for how many people?
+                    </div>
+                    
+                    <div class="conversation-line spanish-line">
+                        <strong>Cliente:</strong> Para dos, por favor.
+                        <button class="audio-btn" onclick="playAudio('restaurant2')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Customer:</strong> For two, please.
+                    </div>
+                    
+                    <div class="conversation-line spanish-line">
+                        <strong>Mesero:</strong> ¿Desean algo para beber primero?
+                        <button class="audio-btn" onclick="playAudio('restaurant3')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Waiter:</strong> Would you like something to drink first?
+                    </div>
+                </div>
+                
+                <div class="conversation-card">
+                    <div class="conversation-line spanish-line">
+                        <strong>Cliente:</strong> ¿Me recomienda algún plato principal?
+                        <button class="audio-btn" onclick="playAudio('restaurant4')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Customer:</strong> Can you recommend a main dish?
+                    </div>
+                    
+                    <div class="conversation-line spanish-line">
+                        <strong>Mesero:</strong> Nuestra especialidad es el paella.
+                        <button class="audio-btn" onclick="playAudio('restaurant5')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Waiter:</strong> Our specialty is paella.
+                    </div>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Shopping</h2>
+                
+                <div class="conversation-card">
+                    <div class="conversation-line spanish-line">
+                        <strong>Vendedor:</strong> ¿En qué puedo ayudarle?
+                        <button class="audio-btn" onclick="playAudio('shopping1')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Shopkeeper:</strong> How can I help you?
+                    </div>
+                    
+                    <div class="conversation-line spanish-line">
+                        <strong>Cliente:</strong> Estoy buscando una camisa blanca.
+                        <button class="audio-btn" onclick="playAudio('shopping2')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Customer:</strong> I'm looking for a white shirt.
+                    </div>
+                    
+                    <div class="conversation-line spanish-line">
+                        <strong>Vendedor:</strong> ¿Qué talla usa usted?
+                        <button class="audio-btn" onclick="playAudio('shopping3')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Shopkeeper:</strong> What size do you wear?
+                    </div>
+                </div>
+                
+                <div class="conversation-card">
+                    <div class="conversation-line spanish-line">
+                        <strong>Cliente:</strong> ¿Tienen esta en azul?
+                        <button class="audio-btn" onclick="playAudio('shopping4')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Customer:</strong> Do you have this in blue?
+                    </div>
+                    
+                    <div class="conversation-line spanish-line">
+                        <strong>Vendedor:</strong> Sí, aquí tiene. ¿Quiere probársela?
+                        <button class="audio-btn" onclick="playAudio('shopping5')"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                    <div class="conversation-line english-line">
+                        <strong>Shopkeeper:</strong> Yes, here you go. Would you like to try it on?
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="practice-section">
+            <h2>Practice What You've Learned</h2>
+            
+            <div class="practice-question" id="question1">
+                <h3>1. How would you ask "For how many people?" in Spanish at a restaurant?</h3>
+                <div class="options">
+                    <div class="option" onclick="checkAnswer(this, 'correct', 'question1')">¿Para cuántas personas?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question1')">¿Cuánto cuesta?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question1')">¿Dónde está el baño?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question1')">¿Qué hora es?</div>
+                </div>
+                <div class="feedback correct">Correct! "¿Para cuántas personas?" is the correct phrase when asking about table size.</div>
+                <div class="feedback incorrect">Not quite. The correct phrase is "¿Para cuántas personas?" which means "For how many people?"</div>
+            </div>
+            
+            <div class="practice-question" id="question2">
+                <h3>2. What would you say if you want to try on clothes in a store?</h3>
+                <div class="options">
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question2')">¿Dónde está la salida?</div>
+                    <div class="option" onclick="checkAnswer(this, 'correct', 'question2')">¿Puedo probármelo?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question2')">¿Tienen comida?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question2')">¿Cuál es tu nombre?</div>
+                </div>
+                <div class="feedback correct">Excellent! "¿Puedo probármelo?" means "Can I try it on?"</div>
+                <div class="feedback incorrect">Actually, "¿Puedo probármelo?" is the correct way to ask to try something on in a store.</div>
+            </div>
+            
+            <div class="practice-question" id="question3">
+                <h3>3. How would you ask for a restaurant recommendation?</h3>
+                <div class="options">
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question3')">¿Qué hora es?</div>
+                    <div class="option" onclick="checkAnswer(this, 'correct', 'question3')">¿Me recomienda algún restaurante?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question3')">¿Dónde vivo?</div>
+                    <div class="option" onclick="checkAnswer(this, 'incorrect', 'question3')">¿Cuánto cuesta?</div>
+                </div>
+                <div class="feedback correct">That's right! "¿Me recomienda algún restaurante?" means "Can you recommend a restaurant?"</div>
+                <div class="feedback incorrect">Not exactly. The correct phrase is "¿Me recomienda algún restaurante?" when asking for recommendations.</div>
+            </div>
+            
+            <button class="next-btn" id="nextBtn" onclick="completeLesson()" disabled>Complete Lesson</button>
+        </section>
+    </div>
+
+    <script>
+        // Underwater animations
+        window.onload = function() {
+            createBubbles();
+            createFish();
+            updateProgressBar(0);
+        };
+
+        function createBubbles() {
+            const bubbleCount = 20;
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                const size = Math.random() * 15 + 5;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                bubble.style.left = `${Math.random() * 100}vw`;
+                bubble.style.bottom = `-${size}px`;
+                
+                const duration = Math.random() * 10 + 5;
+                bubble.style.animationDuration = `${duration}s`;
+                
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                
+                document.body.appendChild(bubble);
+            }
+        }
+
+        function createFish() {
+            const fishCount = 4;
+            const fishTypes = ['🐠', '🐟', '🐡', '🦈'];
+            
+            for (let i = 0; i < fishCount; i++) {
+                const fish = document.createElement('div');
+                fish.classList.add('fish');
+                fish.textContent = fishTypes[i % fishTypes.length];
+                fish.style.fontSize = `${Math.random() * 20 + 30}px`;
+                
+                fish.style.top = `${Math.random() * 70 + 15}vh`;
+                
+                const duration = Math.random() * 20 + 20;
+                fish.style.animationDuration = `${duration}s`;
+                
+                fish.style.animationDelay = `${Math.random() * 10}s`;
+                
+                document.body.appendChild(fish);
+            }
+        }
+
+        // Audio functionality
+        function playAudio(scene) {
+            const audioFiles = {
+                'restaurant1': 'https://audio.spanishdict.com/audio?lang=es&text=Buenas%20tardes%2C%20%C2%BFpara%20cu%C3%A1ntas%20personas%3F',
+                'restaurant2': 'https://audio.spanishdict.com/audio?lang=es&text=Para%20dos%2C%20por%20favor',
+                'restaurant3': 'https://audio.spanishdict.com/audio?lang=es&text=%C2%BFDesean%20algo%20para%20beber%20primero%3F',
+                'restaurant4': 'https://audio.spanishdict.com/audio?lang=es&text=%C2%BFMe%20recomienda%20alg%C3%BAn%20plato%20principal%3F',
+                'restaurant5': 'https://audio.spanishdict.com/audio?lang=es&text=Nuestra%20especialidad%20es%20el%20paella',
+                'shopping1': 'https://audio.spanishdict.com/audio?lang=es&text=%C2%BFEn%20qu%C3%A9%20puedo%20ayudarle%3F',
+                'shopping2': 'https://audio.spanishdict.com/audio?lang=es&text=Estoy%20buscando%20una%20camisa%20blanca',
+                'shopping3': 'https://audio.spanishdict.com/audio?lang=es&text=%C2%BFQu%C3%A9%20talla%20usa%20usted%3F',
+                'shopping4': 'https://audio.spanishdict.com/audio?lang=es&text=%C2%BFTienen%20esta%20en%20azul%3F',
+                'shopping5': 'https://audio.spanishdict.com/audio?lang=es&text=S%C3%AD%2C%20aqu%C3%AD%20tiene.%20%C2%BFQuiere%20prob%C3%A1rsela%3F'
+            };
+
+            const audio = new Audio(audioFiles[scene]);
+            audio.play();
+        }
+
+        // Practice questions functionality
+        let correctAnswers = 0;
+        const totalQuestions = 3;
+
+        function checkAnswer(selectedOption, result, questionId) {
+            const questionDiv = document.getElementById(questionId);
+            const options = questionDiv.querySelectorAll('.option');
+            const correctFeedback = questionDiv.querySelector('.feedback.correct');
+            const incorrectFeedback = questionDiv.querySelector('.feedback.incorrect');
+            
+            // Disable all options after selection
+            options.forEach(option => {
+                option.onclick = null;
+                if (option === selectedOption) {
+                    option.classList.add('selected');
+                }
+            });
+            
+            if (result === 'correct') {
+                selectedOption.classList.add('correct');
+                correctFeedback.style.display = 'block';
+                correctAnswers++;
+            } else {
+                selectedOption.classList.add('incorrect');
+                incorrectFeedback.style.display = 'block';
+                
+                // Highlight the correct answer
+                options.forEach(option => {
+                    if (option.textContent === correctFeedback.textContent.match(/"(.*?)"/)[1]) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+            
+            updateProgressBar((correctAnswers / totalQuestions) * 100);
+            
+            // Enable complete button if all questions answered
+            if (document.querySelectorAll('.option.selected').length === totalQuestions) {
+                document.getElementById('nextBtn').disabled = false;
+            }
+        }
+
+        function updateProgressBar(percentage) {
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        }
+
+        function completeLesson() {
+            alert(`Congratulations! You've completed the Basic Conversations lesson with ${correctAnswers} out of ${totalQuestions} correct answers.`);
+            // Here you would typically save progress to user's account
+        }
+    </script>
+</body>
+</html>
